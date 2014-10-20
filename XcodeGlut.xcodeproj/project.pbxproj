@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		7A09497F19F460DC0052E044 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A09497E19F460DC0052E044 /* main.cpp */; };
 		7A09498119F460DC0052E044 /* XcodeGlut.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7A09498019F460DC0052E044 /* XcodeGlut.1 */; };
+		7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498719F460E80052E044 /* OpenAL.framework */; };
+		7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498819F460E80052E044 /* OpenGL.framework */; };
+		7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498B19F460EE0052E044 /* GLUT.framework */; };
+		7A54893119F583E6000DF15B /* Vector3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A54892F19F583E6000DF15B /* Vector3f.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +32,11 @@
 		7A09497B19F460DC0052E044 /* XcodeGlut */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XcodeGlut; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A09497E19F460DC0052E044 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7A09498019F460DC0052E044 /* XcodeGlut.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = XcodeGlut.1; sourceTree = "<group>"; };
+		7A09498719F460E80052E044 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		7A09498819F460E80052E044 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		7A54892F19F583E6000DF15B /* Vector3f.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3f.cpp; path = ../Vector3f.cpp; sourceTree = "<group>"; };
+		7A54893019F583E6000DF15B /* Vector3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vector3f.h; path = ../Vector3f.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +44,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */,
+				7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */,
+				7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +56,9 @@
 		7A09497219F460DC0052E044 = {
 			isa = PBXGroup;
 			children = (
+				7A09498B19F460EE0052E044 /* GLUT.framework */,
+				7A09498719F460E80052E044 /* OpenAL.framework */,
+				7A09498819F460E80052E044 /* OpenGL.framework */,
 				7A09497D19F460DC0052E044 /* XcodeGlut */,
 				7A09497C19F460DC0052E044 /* Products */,
 			);
@@ -60,6 +75,8 @@
 		7A09497D19F460DC0052E044 /* XcodeGlut */ = {
 			isa = PBXGroup;
 			children = (
+				7A54892F19F583E6000DF15B /* Vector3f.cpp */,
+				7A54893019F583E6000DF15B /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
 				7A09498019F460DC0052E044 /* XcodeGlut.1 */,
 			);
@@ -118,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A09497F19F460DC0052E044 /* main.cpp in Sources */,
+				7A54893119F583E6000DF15B /* Vector3f.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,6 +215,8 @@
 		7A09498519F460DC0052E044 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -204,6 +224,8 @@
 		7A09498619F460DC0052E044 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -227,6 +249,7 @@
 				7A09498619F460DC0052E044 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
