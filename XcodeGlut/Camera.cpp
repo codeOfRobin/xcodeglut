@@ -9,3 +9,6 @@
 #include "Camera.h"
 
 #include "Vector3f.h"
+
+vector3f Camera::rotation;
+vector3f Camera::position;

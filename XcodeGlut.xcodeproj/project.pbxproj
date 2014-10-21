@@ -16,6 +16,8 @@
 		7A84E4AD19F6B3CB00E0EAA8 /* mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */; };
 		7A84E4AE19F6B3CB00E0EAA8 /* Vector3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */; };
 		7A84E4B119F6E74200E0EAA8 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4AF19F6E74200E0EAA8 /* Camera.cpp */; };
+		7AED624519F709F6002E7440 /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AED624319F709F6002E7440 /* Math.cpp */; };
+		7AED624819F71236002E7440 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AED624619F71236002E7440 /* Texture.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +48,11 @@
 		7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3f.h; sourceTree = "<group>"; };
 		7A84E4AF19F6E74200E0EAA8 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		7A84E4B019F6E74200E0EAA8 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		7AED624319F709F6002E7440 /* Math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Math.cpp; sourceTree = "<group>"; };
+		7AED624419F709F6002E7440 /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Math.h; sourceTree = "<group>"; };
+		7AED624619F71236002E7440 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		7AED624719F71236002E7440 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		7AED624919F71EA3002E7440 /* airplane.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = airplane.bmp; path = ../../../Downloads/airplane.bmp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +96,11 @@
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
 				7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
+				7AED624919F71EA3002E7440 /* airplane.bmp */,
+				7AED624619F71236002E7440 /* Texture.cpp */,
+				7AED624719F71236002E7440 /* Texture.h */,
+				7AED624319F709F6002E7440 /* Math.cpp */,
+				7AED624419F709F6002E7440 /* Math.h */,
 				7A84E4AF19F6E74200E0EAA8 /* Camera.cpp */,
 				7A84E4B019F6E74200E0EAA8 /* Camera.h */,
 				7A84E4A719F6B39F00E0EAA8 /* Keyboard.h */,
@@ -150,8 +162,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A09497F19F460DC0052E044 /* main.cpp in Sources */,
+				7AED624819F71236002E7440 /* Texture.cpp in Sources */,
 				7A84E4AE19F6B3CB00E0EAA8 /* Vector3f.cpp in Sources */,
 				7A84E4B119F6E74200E0EAA8 /* Camera.cpp in Sources */,
+				7AED624519F709F6002E7440 /* Math.cpp in Sources */,
 				7A84E4A819F6B39F00E0EAA8 /* Keyboard.cpp in Sources */,
 				7A84E4AD19F6B3CB00E0EAA8 /* mouse.cpp in Sources */,
 			);

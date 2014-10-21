@@ -15,7 +15,7 @@ using namespace std;
 class Camera
 {
 public:
-    vector3f position;
-    vector3f rotation;
+    static vector3f position;
+    static vector3f rotation;
 };
 #endif /* defined(__XcodeGlut__Camera__) */
