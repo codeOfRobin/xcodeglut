@@ -12,7 +12,9 @@
 #include <OpenAL/alc.h>
 #include <GLUT/GLUT.h>
 #include <math.h>
-#import "Vector3f.h"
+#include "Vector3f.h"
+#include "mouse.h"
+#include "Keyboard.h"
 
 vector3f CAMERA_ROTATION;
 vector3f CAMERA_POSITION;
@@ -21,7 +23,7 @@ const int WINDOW_HEIGHT=720;
 const int WINDOW_WIDTH=1200;
 const char* WINDOW_TITLE="something";
 
-const float WALKING_SPEED=0.1;
+const float WALKING_SPEED=0.01;
 float LAST_TIME;
 float CURRENT_TIME;
 float DELTA_TIME;
@@ -47,40 +49,17 @@ double cosd(double theta)
 }
 
 
-
-bool KEYS[256];
-
-void keyboardDown(unsigned char key, int x, int y)
-{
-    KEYS[key]=true;
-}
-void keyBoardUp(unsigned char key, int x, int y)
-{
-    KEYS[key]=false;
-}
-
-void mouseMove(int x, int y)
-{
-    MOUSE_CURRENT_X=x;
-    MOUSE_CURRENT_Y=y;
-    
-
-}
 void preProcessEvents()
 {
     CURRENT_TIME=(float)glutGet(GLUT_ELAPSED_TIME);
     DELTA_TIME=CURRENT_TIME-LAST_TIME;
     LAST_TIME=CURRENT_TIME;
     
-    MOUSE_DELTA_X=MOUSE_CURRENT_X-MOUSE_LAST_X;
-    MOUSE_DELTA_Y=MOUSE_CURRENT_Y-MOUSE_LAST_Y;
-    
-    MOUSE_LAST_X=MOUSE_CURRENT_X;
-    MOUSE_LAST_Y=MOUSE_CURRENT_Y;
-    
+
+    mouse::update();
     //mouse processing
-    CAMERA_ROTATION.y+=(float)MOUSE_DELTA_X*MOUSE_SENSITIVITY;
-    CAMERA_ROTATION.x+=(float)MOUSE_DELTA_Y*MOUSE_SENSITIVITY;
+    CAMERA_ROTATION.y+=(float)mouse::deltaX*MOUSE_SENSITIVITY;
+    CAMERA_ROTATION.x+=(float)mouse::deltaY*MOUSE_SENSITIVITY;
     
     if (CAMERA_ROTATION.x>MAX_TILT)
     {
@@ -91,27 +70,27 @@ void preProcessEvents()
         CAMERA_ROTATION.x=-1*MAX_TILT;
     }
     cout<<MOUSE_DELTA_X<<endl;
-    if (KEYS['w'])
+    if (keyBoard::key['w'])
     {
         CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y);
         CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y);
     }
-    else if (KEYS['s'])
+    else if (keyBoard::key['s'])
     {
         CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+180);
         CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y+180);
     }
-    else if (KEYS['a'])
+    else if (keyBoard::key['a'])
     {
-        CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+270);
+        CAMERA_POSITION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+270);
         CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y+270);
     }
-    else if (KEYS['d'])
+    else if (keyBoard::key['d'])
     {
-        CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+90);
+        CAMERA_POSITION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+90);
         CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y+90);
     }
-    else if (KEYS[' '])
+    else if (keyBoard::key[' '])
     {
     
     }
@@ -158,7 +137,6 @@ void display()
 
 int main(int argc,char ** argv)
 {
-    CAMERA_ROTATION.z=30.0f;
     
     glutInit(&argc, argv);
     glutInitWindowPosition(0, 0);
@@ -170,11 +148,11 @@ int main(int argc,char ** argv)
     glutReshapeFunc(reshape);
     glutIdleFunc(display);
     
-    glutKeyboardFunc(keyboardDown);
-    glutKeyboardUpFunc(keyBoardUp);
+    glutKeyboardFunc(keyBoard::keyDown);
+    glutKeyboardUpFunc(keyBoard::keyUp);
     
-    glutMotionFunc(mouseMove);
-    glutPassiveMotionFunc(mouseMove);
+    glutMotionFunc(mouse::move);
+    glutPassiveMotionFunc(mouse::move);
     glutMainLoop();
     return 0;
 }
