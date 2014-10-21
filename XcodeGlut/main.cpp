@@ -25,11 +25,11 @@ const float WALKING_SPEED=0.1;
 float LAST_TIME;
 float CURRENT_TIME;
 float DELTA_TIME;
-
+const float MAX_TILT=85;
 int MOUSE_LAST_X, MOUSE_LAST_Y;
 int MOUSE_CURRENT_X, MOUSE_CURRENT_Y;
 int MOUSE_DELTA_X, MOUSE_DELTA_Y;
-const float MOUSE_SENSITIVITY=1;
+const float MOUSE_SENSITIVITY=0.1;
 
 double degreesToRadians(double degrees)
 {
@@ -82,6 +82,14 @@ void preProcessEvents()
     CAMERA_ROTATION.y+=(float)MOUSE_DELTA_X*MOUSE_SENSITIVITY;
     CAMERA_ROTATION.x+=(float)MOUSE_DELTA_Y*MOUSE_SENSITIVITY;
     
+    if (CAMERA_ROTATION.x>MAX_TILT)
+    {
+        CAMERA_ROTATION.x=MAX_TILT;
+    }
+    else if (CAMERA_ROTATION.x<-1*MAX_TILT)
+    {
+        CAMERA_ROTATION.x=-1*MAX_TILT;
+    }
     cout<<MOUSE_DELTA_X<<endl;
     if (KEYS['w'])
     {
@@ -90,16 +98,18 @@ void preProcessEvents()
     }
     else if (KEYS['s'])
     {
-        CAMERA_ROTATION.x=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y);
-        CAMERA_POSITION.z-=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y);
+        CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+180);
+        CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y+180);
     }
     else if (KEYS['a'])
     {
-        CAMERA_POSITION.x-=WALKING_SPEED*DELTA_TIME;
+        CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+270);
+        CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y+270);
     }
     else if (KEYS['d'])
     {
-        CAMERA_POSITION.x+=WALKING_SPEED*DELTA_TIME;
+        CAMERA_ROTATION.x+=WALKING_SPEED*DELTA_TIME*sind(CAMERA_ROTATION.y+90);
+        CAMERA_POSITION.z+=WALKING_SPEED*DELTA_TIME*cosd(CAMERA_ROTATION.y+90);
     }
     else if (KEYS[' '])
     {
@@ -129,10 +139,11 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
-    glTranslatef(-CAMERA_POSITION.x, -CAMERA_POSITION.y, -CAMERA_POSITION.z);
     glRotatef(CAMERA_ROTATION.x, 1, 0, 0);
     glRotatef(CAMERA_ROTATION.y, 0, 1, 0);
     glRotatef(CAMERA_ROTATION.z, 0, 0, 1);
+    glTranslatef(-CAMERA_POSITION.x, -CAMERA_POSITION.y, -CAMERA_POSITION.z);
+
     glBegin(GL_TRIANGLES);
     glColor3f(1, 0, 0);
     glVertex3f(-1, -1.0f,-3);

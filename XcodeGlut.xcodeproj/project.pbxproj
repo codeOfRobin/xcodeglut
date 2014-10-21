@@ -13,6 +13,7 @@
 		7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498819F460E80052E044 /* OpenGL.framework */; };
 		7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498B19F460EE0052E044 /* GLUT.framework */; };
 		7A54893119F583E6000DF15B /* Vector3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A54892F19F583E6000DF15B /* Vector3f.cpp */; };
+		7AB5D35419F5CAEC0096B390 /* mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AB5D35219F5CAEC0096B390 /* mouse.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +38,8 @@
 		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		7A54892F19F583E6000DF15B /* Vector3f.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3f.cpp; path = ../Vector3f.cpp; sourceTree = "<group>"; };
 		7A54893019F583E6000DF15B /* Vector3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vector3f.h; path = ../Vector3f.h; sourceTree = "<group>"; };
+		7AB5D35219F5CAEC0096B390 /* mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mouse.cpp; path = ../mouse.cpp; sourceTree = "<group>"; };
+		7AB5D35319F5CAEC0096B390 /* mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mouse.h; path = ../mouse.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +78,8 @@
 		7A09497D19F460DC0052E044 /* XcodeGlut */ = {
 			isa = PBXGroup;
 			children = (
+				7AB5D35219F5CAEC0096B390 /* mouse.cpp */,
+				7AB5D35319F5CAEC0096B390 /* mouse.h */,
 				7A54892F19F583E6000DF15B /* Vector3f.cpp */,
 				7A54893019F583E6000DF15B /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
@@ -136,6 +141,7 @@
 			files = (
 				7A09497F19F460DC0052E044 /* main.cpp in Sources */,
 				7A54893119F583E6000DF15B /* Vector3f.cpp in Sources */,
+				7AB5D35419F5CAEC0096B390 /* mouse.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
