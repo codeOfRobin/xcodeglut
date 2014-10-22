@@ -14,9 +14,10 @@
 using namespace std;
 class Texture
 {
+public:
+
     unsigned int textureID;
     
-public:
     Texture(void *data,int w, int h,int format);
     
     static Texture* loadBMP(const char* filename);

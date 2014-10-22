@@ -40,6 +40,7 @@
 		7A09498719F460E80052E044 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		7A09498819F460E80052E044 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		7A38DDE519F7DA59000DBF32 /* airplane.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = airplane.bmp; sourceTree = "<group>"; };
 		7A84E4A619F6B39F00E0EAA8 /* Keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Keyboard.cpp; sourceTree = "<group>"; };
 		7A84E4A719F6B39F00E0EAA8 /* Keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mouse.cpp; sourceTree = "<group>"; };
@@ -52,7 +53,6 @@
 		7AED624419F709F6002E7440 /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Math.h; sourceTree = "<group>"; };
 		7AED624619F71236002E7440 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
 		7AED624719F71236002E7440 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
-		7AED624919F71EA3002E7440 /* airplane.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = airplane.bmp; path = ../../../Downloads/airplane.bmp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,12 +91,12 @@
 		7A09497D19F460DC0052E044 /* XcodeGlut */ = {
 			isa = PBXGroup;
 			children = (
+				7A38DDE519F7DA59000DBF32 /* airplane.bmp */,
 				7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */,
 				7A84E4AA19F6B3CB00E0EAA8 /* mouse.h */,
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
 				7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
-				7AED624919F71EA3002E7440 /* airplane.bmp */,
 				7AED624619F71236002E7440 /* Texture.cpp */,
 				7AED624719F71236002E7440 /* Texture.h */,
 				7AED624319F709F6002E7440 /* Math.cpp */,

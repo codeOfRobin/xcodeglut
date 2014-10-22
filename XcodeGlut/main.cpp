@@ -35,6 +35,8 @@ int MOUSE_CURRENT_X, MOUSE_CURRENT_Y;
 int MOUSE_DELTA_X, MOUSE_DELTA_Y;
 const float MOUSE_SENSITIVITY=0.1;
 
+
+Texture* tex;
 void preProcessEvents()
 {
     CURRENT_TIME=(float)glutGet(GLUT_ELAPSED_TIME);
@@ -110,12 +112,34 @@ void display()
 
     glBegin(GL_TRIANGLES);
     glColor3f(1, 0, 0);
-    glVertex3f(-1, -1.0f,-3);
+    glVertex3f(-1, 0,-3);
     glColor3f(0, 1, 0);
-    glVertex3f(0.0f, 1.0f,-3);
+    glVertex3f(0.0f, 2.0f,-3);
     glColor3f(0, 0, 1);
-    glVertex3f(1.0f, -1.0f,-3);
+    glVertex3f(1.0f, 0.0f,-3);
     glEnd();
+    
+    glBindTexture(GL_TEXTURE_2D, tex->textureID);
+    
+    glBegin(GL_QUADS);
+    
+    glColor3f(1, 1, 1);
+    
+    glTexCoord2f(100, 100);
+    glVertex3f(100,0,100);
+    
+    glTexCoord2f(-100, 100);
+    glVertex3f(-100,0,100);
+    
+    glTexCoord2f(-100,-100);
+    glVertex3f(-100,0,-100);
+    
+    glTexCoord2f(100,-100);
+    glVertex3f(100,0,-100);
+
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     
     glutSwapBuffers();
 }
@@ -139,7 +163,19 @@ int main(int argc,char ** argv)
     glutMotionFunc(mouse::move);
     glutPassiveMotionFunc(mouse::move);
     
-    Texture* texture=Texture::loadBMP("something.bmp");
+    //Enable features
+    
+    //setup content
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glGetError();
+    tex=Texture::loadBMP("/Users/robinmalhotra2/Downloads/tiles.bmp");
+    if (!tex)
+    {
+        return 1;
+    }
+    
+    Camera::position.y=1;
     glutMainLoop();
     return 0;
 }
