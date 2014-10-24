@@ -164,7 +164,7 @@ int main(int argc,char ** argv)
     glutPassiveMotionFunc(mouse::move);
     
     //Enable features
-    
+
     //setup content
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);

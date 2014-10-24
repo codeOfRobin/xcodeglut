@@ -16,6 +16,7 @@
 		7A84E4AD19F6B3CB00E0EAA8 /* mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */; };
 		7A84E4AE19F6B3CB00E0EAA8 /* Vector3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */; };
 		7A84E4B119F6E74200E0EAA8 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4AF19F6E74200E0EAA8 /* Camera.cpp */; };
+		7AE8527D19FA637000E6E795 /* loadObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AE8527B19FA637000E6E795 /* loadObject.cpp */; };
 		7AED624519F709F6002E7440 /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AED624319F709F6002E7440 /* Math.cpp */; };
 		7AED624819F71236002E7440 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AED624619F71236002E7440 /* Texture.cpp */; };
 /* End PBXBuildFile section */
@@ -49,6 +50,8 @@
 		7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3f.h; sourceTree = "<group>"; };
 		7A84E4AF19F6E74200E0EAA8 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		7A84E4B019F6E74200E0EAA8 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		7AE8527B19FA637000E6E795 /* loadObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = loadObject.cpp; sourceTree = "<group>"; };
+		7AE8527C19FA637000E6E795 /* loadObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadObject.h; sourceTree = "<group>"; };
 		7AED624319F709F6002E7440 /* Math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Math.cpp; sourceTree = "<group>"; };
 		7AED624419F709F6002E7440 /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Math.h; sourceTree = "<group>"; };
 		7AED624619F71236002E7440 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
@@ -91,6 +94,8 @@
 		7A09497D19F460DC0052E044 /* XcodeGlut */ = {
 			isa = PBXGroup;
 			children = (
+				7AE8527B19FA637000E6E795 /* loadObject.cpp */,
+				7AE8527C19FA637000E6E795 /* loadObject.h */,
 				7A38DDE519F7DA59000DBF32 /* airplane.bmp */,
 				7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */,
 				7A84E4AA19F6B3CB00E0EAA8 /* mouse.h */,
@@ -167,6 +172,7 @@
 				7A84E4B119F6E74200E0EAA8 /* Camera.cpp in Sources */,
 				7AED624519F709F6002E7440 /* Math.cpp in Sources */,
 				7A84E4A819F6B39F00E0EAA8 /* Keyboard.cpp in Sources */,
+				7AE8527D19FA637000E6E795 /* loadObject.cpp in Sources */,
 				7A84E4AD19F6B3CB00E0EAA8 /* mouse.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
