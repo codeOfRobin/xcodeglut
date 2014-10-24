@@ -144,7 +144,7 @@ void display()
     
     loadObject object1;
     
-    object1.load("/Users/robinmalhotra2/Desktop/Cyprys_House.obj");
+    object1.load("/Users/robinmalhotra2/Developer/opengl/opengl/dragon.obj");
     object1.draw();
     
     glutSwapBuffers();

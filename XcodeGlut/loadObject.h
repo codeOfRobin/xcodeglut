@@ -18,7 +18,7 @@ class loadObject
 {public:
     
     int load(const char* filename);
-    vector<string*> coord;
+    vector<string> coord;
 
     void draw();
     struct coordinate
