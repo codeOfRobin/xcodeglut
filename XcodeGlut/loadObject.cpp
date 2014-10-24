@@ -148,9 +148,8 @@ void loadObject::draw()
 {
     if (faces.at(0).four==true)
     {
-        cout<<faces.size();
+        
         glBegin(GL_QUADS);
-
         for (int i=0; i<faces.size(); i++)
         {
             glVertex3f(vertex.at(faces.at(i).faceVertices[0]-1)->x, vertex.at(faces.at(i).faceVertices[0]-1)->y, vertex.at(faces.at(i).faceVertices[0]-1)->z);

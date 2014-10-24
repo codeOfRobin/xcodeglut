@@ -37,6 +37,9 @@ int MOUSE_CURRENT_X, MOUSE_CURRENT_Y;
 int MOUSE_DELTA_X, MOUSE_DELTA_Y;
 const float MOUSE_SENSITIVITY=0.1;
 
+loadObject object1;
+
+
 
 Texture* tex;
 void preProcessEvents()
@@ -142,13 +145,11 @@ void display()
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     
-    loadObject object1;
-    
-    object1.load("/Users/robinmalhotra2/Developer/opengl/opengl/dragon.obj");
     object1.draw();
     
     glutSwapBuffers();
 }
+
 
 int main(int argc,char ** argv)
 {
@@ -183,6 +184,8 @@ int main(int argc,char ** argv)
     
     Camera::position.y=1;
     
+    object1.load("/Users/robinmalhotra2/Desktop/o0tq5egvgkqo-M/Miami 2525/Miami 2525.obj");
+
     glutMainLoop();
     return 0;
 }
