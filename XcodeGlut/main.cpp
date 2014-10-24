@@ -11,12 +11,14 @@
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
 #include <GLUT/GLUT.h>
+#include <stdio.h>
 #include "Math.h"
 #include "Vector3f.h"
 #include "mouse.h"
 #include "Keyboard.h"
 #include "Camera.h"
 #include "Texture.h"
+#include "loadObject.h"
 
 vector3f CAMERA_ROTATION;
 vector3f CAMERA_POSITION;
@@ -139,7 +141,11 @@ void display()
 
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
-
+    
+    loadObject object1;
+    
+    object1.load("/Users/robinmalhotra2/Desktop/Cyprys_House.obj");
+    object1.draw();
     
     glutSwapBuffers();
 }
@@ -176,6 +182,7 @@ int main(int argc,char ** argv)
     }
     
     Camera::position.y=1;
+    
     glutMainLoop();
     return 0;
 }
