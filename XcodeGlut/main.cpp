@@ -39,9 +39,10 @@ const float MOUSE_SENSITIVITY=0.1;
 
 loadObject object1;
 
-
+GLUquadric *quad;
 
 Texture* tex;
+Texture* tex2;
 void preProcessEvents()
 {
     CURRENT_TIME=(float)glutGet(GLUT_ELAPSED_TIME);
@@ -51,41 +52,40 @@ void preProcessEvents()
 
     mouse::update();
     //mouse processing
-    Camera::rotation.y+=(float)mouse::deltaX*MOUSE_SENSITIVITY;
-    Camera::rotation.x+=(float)mouse::deltaY*MOUSE_SENSITIVITY;
+    Camera::rotationAngles.y+=(float)mouse::deltaX*MOUSE_SENSITIVITY;
+    Camera::rotationAngles.x-=(float)mouse::deltaY*MOUSE_SENSITIVITY;
     
-    if (Camera::rotation.x>MAX_TILT)
+    if (Camera::rotationAngles.x>MAX_TILT)
     {
-        Camera::rotation.x=MAX_TILT;
+        Camera::rotationAngles.x=MAX_TILT;
     }
-    else if (Camera::rotation.x<-1*MAX_TILT)
+    else if (Camera::rotationAngles.x<-1*MAX_TILT)
     {
-        Camera::rotation.x=-1*MAX_TILT;
+        Camera::rotationAngles.x=-1*MAX_TILT;
     }
     if (keyBoard::key['w'])
     {
-        Camera::position.x-=WALKING_SPEED*DELTA_TIME*Math::sind(Camera::rotation.y);
-        Camera::position.z-=WALKING_SPEED*DELTA_TIME*Math::cosd(Camera::rotation.y);
+        Camera::position.z-=WALKING_SPEED*DELTA_TIME*Math::sind(Camera::rotationAngles.y);
+        Camera::position.x-=WALKING_SPEED*DELTA_TIME*Math::cosd(Camera::rotationAngles.y);
     }
     else if (keyBoard::key['s'])
     {
-        Camera::position.x-=WALKING_SPEED*DELTA_TIME*Math::sind(Camera::rotation.y+180);
-        Camera::position.z-=WALKING_SPEED*DELTA_TIME*Math::cosd(Camera::rotation.y+180);
+        Camera::position.z+=WALKING_SPEED*DELTA_TIME*Math::sind(Camera::rotationAngles.y);
+        Camera::position.x+=WALKING_SPEED*DELTA_TIME*Math::cosd(Camera::rotationAngles.y);
     }
     else if (keyBoard::key['a'])
     {
-        Camera::position.x+=WALKING_SPEED*DELTA_TIME*Math::sind(Camera::rotation.y+270);
-        Camera::position.z+=WALKING_SPEED*DELTA_TIME*Math::cosd(Camera::rotation.y+270);
+        Camera::rotationAngles.y-=WALKING_SPEED*DELTA_TIME*3;
     }
     else if (keyBoard::key['d'])
     {
-        Camera::position.x+=WALKING_SPEED*DELTA_TIME*Math::sind(Camera::rotation.y+90);
-        Camera::position.z+=WALKING_SPEED*DELTA_TIME*Math::cosd(Camera::rotation.y+90);
+        Camera::rotationAngles.y+=WALKING_SPEED*DELTA_TIME*3;
     }
     else if (keyBoard::key[' '])
     {
     
     }
+    
     
 }
 void reshape(int w, int h)
@@ -109,12 +109,11 @@ void display()
     preProcessEvents();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    
-    glRotatef(Camera::rotation.x, 1, 0, 0);
-    glRotatef(Camera::rotation.y, 0, 1, 0);
-    glRotatef(Camera::rotation.z, 0, 0, 1);
-    glTranslatef(-Camera::position.x, -Camera::position.y, -Camera::position.z);
-
+    gluLookAt(Camera::position.x, Camera::position.y, Camera::position.z,
+              Camera::position.x+Math::sind(Camera::rotationAngles.x)*Math::cosd(Camera::rotationAngles.y),
+              Camera::position.y+Math::cosd(Camera::rotationAngles.x),
+              Camera::position.z+Math::sind(Camera::rotationAngles.x)*Math::sind(Camera::rotationAngles.y),
+              0.0, 1.0, 0.0);
     glBegin(GL_TRIANGLES);
     glColor3f(1, 0, 0);
     glVertex3f(-1, 0,-3);
@@ -123,7 +122,7 @@ void display()
     glColor3f(0, 0, 1);
     glVertex3f(1.0f, 0.0f,-3);
     glEnd();
-    
+
     glBindTexture(GL_TEXTURE_2D, tex->textureID);
     
     glBegin(GL_QUADS);
@@ -147,6 +146,17 @@ void display()
     
     object1.draw();
     
+    glTranslatef(-10.0, 10.0, 0.0);
+    glBindTexture(GL_TEXTURE_2D, tex2->textureID);
+    gluQuadricTexture(quad,1);
+    glMatrixMode(GL_MODELVIEW_MATRIX);
+    glPushMatrix();
+    
+    gluSphere(quad,10,20,20);
+    glRotatef(CURRENT_TIME, 0.0, 0.0, 1.0);
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     glutSwapBuffers();
 }
 
@@ -194,9 +204,12 @@ int main(int argc,char ** argv)
         return 1;
     }
     
+    quad=gluNewQuadric();
+    tex2=Texture::loadBMP("/Users/robinmalhotra2/Downloads/earthmap1k.bmp");
+    
     Camera::position.y=1;
     
-    object1.load("/Users/robinmalhotra2/Desktop/o0tq5egvgkqo-M/Miami 2525/Miami 2525.obj");
+    object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
 
     glutMainLoop();
     return 0;

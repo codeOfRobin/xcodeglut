@@ -10,5 +10,5 @@
 
 #include "Vector3f.h"
 
-vector3f Camera::rotation;
+vector3f Camera::rotationAngles;
 vector3f Camera::position;

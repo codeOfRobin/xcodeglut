@@ -16,6 +16,6 @@ class Camera
 {
 public:
     static vector3f position;
-    static vector3f rotation;
+    static vector3f rotationAngles;
 };
 #endif /* defined(__XcodeGlut__Camera__) */
