@@ -25,6 +25,7 @@ class loadObject
     {
         float x,y,z;
         coordinate(float a, float b, float c):x(a),y(b),z(c){};
+        coordinate(float a,float b):x(a),y(b){};
     };
     struct face
     {

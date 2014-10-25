@@ -58,9 +58,9 @@ int loadObject::load(const char *filename)
             }
         else if ((coord[i].c_str())[0]=='v' && (coord[i].c_str())[1]=='t')
             {
-                float tempx, tempy,tempz;
-                sscanf(coord[i].c_str(), "vt %f %f %f", &tempx, &tempy, &tempz);
-                textureVertex.push_back(new coordinate(tempx,tempy,tempz));
+                float tempx, tempy;
+                sscanf(coord[i].c_str(), "vt %f %f", &tempx, &tempy);
+                textureVertex.push_back(new coordinate(tempx,tempy));
             }
             
         else if ((coord[i].c_str())[0]=='f')
@@ -153,9 +153,21 @@ void loadObject::draw()
         for (int i=0; i<faces.size(); i++)
         {
             glVertex3f(vertex.at(faces.at(i).faceVertices[0]-1)->x, vertex.at(faces.at(i).faceVertices[0]-1)->y, vertex.at(faces.at(i).faceVertices[0]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[0]-1)->x, textureVertex.at(faces.at(i).textureVertices[0]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[0]-1)->x, normals.at(faces.at(i).normals[0]-1)->y, normals.at(faces.at(i).normals[0]-1)->z);
+
             glVertex3f(vertex.at(faces.at(i).faceVertices[1]-1)->x, vertex.at(faces.at(i).faceVertices[1]-1)->y, vertex.at(faces.at(i).faceVertices[1]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[1]-1)->x, textureVertex.at(faces.at(i).textureVertices[1]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[1]-1)->x, normals.at(faces.at(i).normals[1]-1)->y, normals.at(faces.at(i).normals[1]-1)->z);
+
             glVertex3f(vertex.at(faces.at(i).faceVertices[2]-1)->x, vertex.at(faces.at(i).faceVertices[2]-1)->y, vertex.at(faces.at(i).faceVertices[2]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[2]-1)->x, textureVertex.at(faces.at(i).textureVertices[2]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[2]-1)->x, normals.at(faces.at(i).normals[2]-1)->y, normals.at(faces.at(i).normals[2]-1)->z);
+
+            
             glVertex3f(vertex.at(faces.at(i).faceVertices[3]-1)->x, vertex.at(faces.at(i).faceVertices[3]-1)->y, vertex.at(faces.at(i).faceVertices[3]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[3]-1)->x, textureVertex.at(faces.at(i).textureVertices[3]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[3]-1)->x, normals.at(faces.at(i).normals[3]-1)->y, normals.at(faces.at(i).normals[3]-1)->z);
 
         }
         glEnd();
@@ -169,8 +181,20 @@ void loadObject::draw()
         for (int i=0; i<faces.size(); i++)
         {
             glVertex3f(vertex.at(faces.at(i).faceVertices[0]-1)->x, vertex.at(faces.at(i).faceVertices[0]-1)->y, vertex.at(faces.at(i).faceVertices[0]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[0]-1)->x, textureVertex.at(faces.at(i).textureVertices[0]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[0]-1)->x, normals.at(faces.at(i).normals[0]-1)->y, normals.at(faces.at(i).normals[0]-1)->z);
+            
+            
             glVertex3f(vertex.at(faces.at(i).faceVertices[1]-1)->x, vertex.at(faces.at(i).faceVertices[1]-1)->y, vertex.at(faces.at(i).faceVertices[1]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[1]-1)->x, textureVertex.at(faces.at(i).textureVertices[1]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[1]-1)->x, normals.at(faces.at(i).normals[1]-1)->y, normals.at(faces.at(i).normals[1]-1)->z);
+
+        
             glVertex3f(vertex.at(faces.at(i).faceVertices[2]-1)->x, vertex.at(faces.at(i).faceVertices[2]-1)->y, vertex.at(faces.at(i).faceVertices[2]-1)->z);
+            glTexCoord2f(textureVertex.at(faces.at(i).textureVertices[2]-1)->x, textureVertex.at(faces.at(i).textureVertices[2]-1)->y);
+            glNormal3f(normals.at(faces.at(i).normals[2]-1)->x, normals.at(faces.at(i).normals[2]-1)->y, normals.at(faces.at(i).normals[2]-1)->z);
+
+
         }
         glEnd();
 

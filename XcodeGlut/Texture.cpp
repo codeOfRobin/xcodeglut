@@ -61,7 +61,6 @@ Texture* Texture::loadBMP(const char *filename)
     fread(&bitsPerPixel,1, sizeof(unsigned short), fp);
     fread(&compressionMethod, 1, sizeof(unsigned int), fp);
     fread(&bmpDataSize, 1, sizeof(unsigned int), fp);
-    cout<<numColorPlanes<<" "<<bitsPerPixel<<" "<<" "<<compressionMethod<<endl;
     
     if (numColorPlanes!=1||bitsPerPixel!=24||compressionMethod!=0)//dealing with 24 bit BMPs
     {
@@ -73,7 +72,6 @@ Texture* Texture::loadBMP(const char *filename)
     unsigned char *bmpData=new unsigned char[bmpDataSize];//unsigned char is a byte
     fseek(fp, bmpDataLocation, SEEK_SET);
     fread(bmpData, bmpDataSize, sizeof(unsigned char), fp);
-    cout<<bmpData;
     fclose(fp);
 
     return new Texture(bmpData, bmpWidth,bmpHeight,GL_RGB);
