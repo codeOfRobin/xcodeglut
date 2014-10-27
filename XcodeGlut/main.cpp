@@ -128,7 +128,7 @@ void display()
     glBegin(GL_QUADS);
     
     glColor3f(1, 1, 1);
-    
+    cout<<Camera::rotationAngles.x;
     glTexCoord2f(100, 100);
     glVertex3f(100,0,100);
     
@@ -151,9 +151,10 @@ void display()
     gluQuadricTexture(quad,1);
     glMatrixMode(GL_MODELVIEW_MATRIX);
     glPushMatrix();
+    glRotatef(-90, 1.0f, 0.0f, 0.0f);
+    glRotatef(CURRENT_TIME, 0.0, 0.0, 1.0);
     
     gluSphere(quad,10,20,20);
-    glRotatef(CURRENT_TIME, 0.0, 0.0, 1.0);
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
 
