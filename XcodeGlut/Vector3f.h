@@ -16,5 +16,12 @@ public:
     float x=0.0f;
     float y=0.0f;
     float z=0.0f;
+    
+    vector3f(float xx, float yy, float zz)
+    {
+        x=xx;
+        y=yy;
+        z=zz;
+    }
 };
 #endif /* defined(__XcodeGlut__Vector3f__) */

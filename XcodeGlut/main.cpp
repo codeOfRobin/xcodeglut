@@ -20,8 +20,7 @@
 #include "Texture.h"
 #include "loadObject.h"
 
-vector3f CAMERA_ROTATION;
-vector3f CAMERA_POSITION;
+
 using namespace std;
 const int WINDOW_HEIGHT=720;
 const int WINDOW_WIDTH=1200;
@@ -43,6 +42,21 @@ GLUquadric *quad;
 
 Texture* tex;
 Texture* tex2;
+
+
+//bezier curve
+GLfloat bezierCurve(float t, GLfloat P0,
+                    GLfloat P1, GLfloat P2, GLfloat P3) {
+    // Cubic bezier Curve
+    GLfloat point = (pow((1-t), 3.0) * P0) +
+    (3 * pow((1-t),2) * t * P1) +
+    (3 * (1-t) * t * t * P2) +
+    (pow(t, 3) * P3);
+    return point;
+}
+
+
+
 void preProcessEvents()
 {
     CURRENT_TIME=(float)glutGet(GLUT_ELAPSED_TIME);
@@ -122,13 +136,40 @@ void display()
     glColor3f(0, 0, 1);
     glVertex3f(1.0f, 0.0f,-3);
     glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, tex->textureID);
     
+    
+    
+    //example for bezier
+    vector3f start(-3.07,7.07,0);
+    vector3f tan1(-10,0,12);
+    vector3f tan2(-10,5,12);
+    vector3f end(-10,10,0);
+    
+    glColor3f(1.0, 0.0, 0.0);
+    glLineWidth(6.0);
+
+    glBegin(GL_LINE_STRIP);
+    int t = 30;
+    for (int i = 0; i <= t; i++) {
+        float pos = (float) i / (float) t;
+        GLfloat x = bezierCurve( pos,start.x, tan1.x, tan2.x, end.x);
+        GLfloat y = bezierCurve( pos,start.y, tan1.y, tan2.y, end.y);
+        // In our case, the z should always be empty
+        GLfloat z = bezierCurve(pos,start.z, tan1.z, tan2.z, end.z);
+        
+        vector3f result(x, y, z);
+        glVertex3f(x, y, z);
+    }
+    glEnd();
+    
+    
+    
+    
+    glBindTexture(GL_TEXTURE_2D, tex->textureID);
+
     glBegin(GL_QUADS);
     
     glColor3f(1, 1, 1);
-    cout<<Camera::rotationAngles.x;
     glTexCoord2f(100, 100);
     glVertex3f(100,0,100);
     
@@ -146,13 +187,14 @@ void display()
     
     object1.draw();
     
+    //globe
     glTranslatef(-10.0, 10.0, 0.0);
     glBindTexture(GL_TEXTURE_2D, tex2->textureID);
     gluQuadricTexture(quad,1);
     glMatrixMode(GL_MODELVIEW_MATRIX);
     glPushMatrix();
     glRotatef(-90, 1.0f, 0.0f, 0.0f);
-    glRotatef(CURRENT_TIME, 0.0, 0.0, 1.0);
+    glRotatef(0, 0.0, 0.0, 1.0);
     
     gluSphere(quad,10,20,20);
     glPopMatrix();
@@ -182,20 +224,21 @@ int main(int argc,char ** argv)
     glutPassiveMotionFunc(mouse::move);
     
     //Enable features
-    
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
-    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+    //stuff about light COLOR MATERIAL allows GL_color to actually work
+    GLfloat light_position[] = { 100.0, 100.0, 100.0, 0.0 };
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glShadeModel (GL_SMOOTH);
-    
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    GLfloat white[] = {0.8f, 0.8f, 0.8f, 1.0f};
+
+    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+    
     //setup content
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glGetError();
@@ -206,7 +249,7 @@ int main(int argc,char ** argv)
     }
     
     quad=gluNewQuadric();
-    tex2=Texture::loadBMP("/Users/robinmalhotra2/Downloads/earthmap1k.bmp");
+    tex2=Texture::loadBMP("/Users/robinmalhotra2/Downloads/venusmap.bmp");
     
     Camera::position.y=1;
     
