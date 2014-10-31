@@ -44,6 +44,8 @@ Texture* tex;
 Texture* tex2;
 
 
+float venusRotate;
+
 //bezier curve
 GLfloat bezierCurve(float t, GLfloat P0,
                     GLfloat P1, GLfloat P2, GLfloat P3) {
@@ -53,6 +55,46 @@ GLfloat bezierCurve(float t, GLfloat P0,
     (3 * (1-t) * t * t * P2) +
     (pow(t, 3) * P3);
     return point;
+}
+
+
+vector3f randomSpherePoint()
+{
+    float u = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float v = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float theta = 2 * M_PI * u;
+    float phi = acos(2*v-1);
+    float x=-10+(10*sin(phi*cos(theta)));
+    float y=50+(10 * sin(phi) * sin(theta));
+    float z=10*cos(phi);
+    
+    return vector3f(x,y,z);
+}
+
+vector3f GetOGLPos(int x, int y)
+{
+    GLint viewport[4];
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLfloat winX, winY, winZ;
+    GLdouble posX, posY, posZ;
+    
+    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+    glGetDoublev( GL_PROJECTION_MATRIX, projection );
+    glGetIntegerv( GL_VIEWPORT, viewport );
+    
+    winX = (float)x;
+    winY = (float)viewport[3] - (float)y;
+    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+    
+    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    cout<<posX<<" "<<posY<<" "<<posZ<<" "<<endl;
+    return vector3f(posX, posY, posZ);
+}
+
+void mouseClick(int button,int state,int x, int y)
+{
+    vector3f Coord=GetOGLPos(x, y);
 }
 
 
@@ -95,9 +137,9 @@ void preProcessEvents()
     {
         Camera::rotationAngles.y+=WALKING_SPEED*DELTA_TIME*3;
     }
-    else if (keyBoard::key[' '])
+    else if (keyBoard::key['f'])
     {
-    
+        venusRotate++;
     }
     
     
@@ -138,6 +180,14 @@ void display()
     glEnd();
     
     
+    glBegin(GL_TRIANGLES);
+    for (int i=0; i<400; i++)
+    {
+        
+        vector3f point=randomSpherePoint();
+        glVertex3f(point.x, point.y, point.z);
+    }
+    glEnd();
     
     //example for bezier
     vector3f start(-3.07,7.07,0);
@@ -191,10 +241,10 @@ void display()
     glTranslatef(-10.0, 10.0, 0.0);
     glBindTexture(GL_TEXTURE_2D, tex2->textureID);
     gluQuadricTexture(quad,1);
-    glMatrixMode(GL_MODELVIEW_MATRIX);
+    glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glRotatef(-90, 1.0f, 0.0f, 0.0f);
-    glRotatef(0, 0.0, 0.0, 1.0);
+    glRotatef(venusRotate, 0.0, 0.0, 1.0);
     
     gluSphere(quad,10,20,20);
     glPopMatrix();
@@ -219,6 +269,7 @@ int main(int argc,char ** argv)
     
     glutKeyboardFunc(keyBoard::keyDown);
     glutKeyboardUpFunc(keyBoard::keyUp);
+    glutMouseFunc(mouseClick);
     
     glutMotionFunc(mouse::move);
     glutPassiveMotionFunc(mouse::move);
