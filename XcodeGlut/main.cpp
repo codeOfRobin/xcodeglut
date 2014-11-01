@@ -180,14 +180,15 @@ void display()
     glEnd();
     
     
-    glBegin(GL_TRIANGLES);
     for (int i=0; i<400; i++)
     {
+        glPushMatrix();
         
         vector3f point=randomSpherePoint();
-        glVertex3f(point.x, point.y, point.z);
+        glTranslatef(point.x, point.y, point.z);
+        glutSolidSphere(0.25, 10, 10);
+        glPopMatrix();
     }
-    glEnd();
     
     //example for bezier
     vector3f start(-3.07,7.07,0);
@@ -235,7 +236,10 @@ void display()
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     
+    
+    glPushMatrix();
     object1.draw();
+    glPopMatrix();
     
     //globe
     glTranslatef(-10.0, 10.0, 0.0);
@@ -254,6 +258,12 @@ void display()
 }
 
 
+void renderW1()
+{
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+}
 int main(int argc,char ** argv)
 {
     
@@ -261,7 +271,8 @@ int main(int argc,char ** argv)
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
-    glutCreateWindow(WINDOW_TITLE);
+    int mainWindow=glutCreateWindow(WINDOW_TITLE);
+
     
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
@@ -304,7 +315,7 @@ int main(int argc,char ** argv)
     
     Camera::position.y=1;
     
-    object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
+    object1.load("/Users/robinmalhotra2/Desktop/Cities/tzfhx79fnc-castle/castle/castle.obj");
 
     glutMainLoop();
     return 0;
