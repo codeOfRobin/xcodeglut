@@ -27,6 +27,7 @@ const int WINDOW_WIDTH=1200;
 const char* WINDOW_TITLE="something";
 
 const float WALKING_SPEED=0.01;
+const float CLICK_ACCURACY=0.5;
 float LAST_TIME;
 float CURRENT_TIME;
 float DELTA_TIME;
@@ -47,15 +48,13 @@ Texture* tex2;
 int mainWindow,subWindow;
 
 float venusRotate;
+vector<vector3f>cityVertices;
 
 //bezier curve
 GLfloat bezierCurve(float t, GLfloat P0,
-                    GLfloat P1, GLfloat P2, GLfloat P3) {
+                    GLfloat P1, GLfloat P2) {
     // Cubic bezier Curve
-    GLfloat point = (pow((1-t), 3.0) * P0) +
-    (3 * pow((1-t),2) * t * P1) +
-    (3 * (1-t) * t * t * P2) +
-    (pow(t, 3) * P3);
+    GLfloat point = pow(t,2)*P0 + 2*P1*t*(1-t) + P2*pow(1-t, 2);
     return point;
 }
 
@@ -66,13 +65,26 @@ vector3f randomSpherePoint()
     float v = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float theta = 2 * M_PI * u;
     float phi = acos(2*v-1);
-    float x=-10+(10*sin(phi*cos(theta)));
-    float y=50+(10 * sin(phi) * sin(theta));
+    float x=(10*sin(phi)*cos(theta));
+    float y=(10 * sin(phi) * sin(theta));
     float z=10*cos(phi);
-    
-    return vector3f(x,y,z);
+    return vector3f(x, y, z);
 }
 
+
+void drawRandomSpherePoints()
+{
+    for (int i=0; i<400; i++)
+    {
+        glPushMatrix();
+        
+        vector3f point=cityVertices.at(i);
+        glTranslatef(point.x, point.y, point.z);
+        glutSolidSphere(0.25, 10, 10);
+        glPopMatrix();
+    }
+    
+}
 vector3f GetOGLPos(int x, int y)
 {
     GLint viewport[4];
@@ -90,13 +102,18 @@ vector3f GetOGLPos(int x, int y)
     glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
     
     gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-    cout<<posX<<" "<<posY<<" "<<posZ<<" "<<endl;
     return vector3f(posX, posY, posZ);
 }
 
 void mouseClick(int button,int state,int x, int y)
 {
     vector3f Coord=GetOGLPos(x, y);
+    cout<<Coord.x<<" "<<Coord.y<<" "<<Coord.z<<endl;
+//    for (int i=0;i<cityVertices.size();i++)
+//    {
+//        if (Coord.x-cityVertices.at(i).x<CLICK_ACCURACY && Coord.z-cityVertices.at(i).z<CLICK_ACCURACY && Coord.z-cityVertices.at(i).z<CLICK_ACCURACY  ) {
+//        }
+//    }
 }
 
 
@@ -184,42 +201,9 @@ void display()
     glVertex3f(1.0f, 0.0f,-3);
     glEnd();
     
-    
-    for (int i=0; i<400; i++)
-    {
-        glPushMatrix();
-        
-        vector3f point=randomSpherePoint();
-        glTranslatef(point.x, point.y, point.z);
-        glutSolidSphere(0.25, 10, 10);
-        glPopMatrix();
-    }
-    
-    //example for bezier
-    vector3f start(-3.07,7.07,0);
-    vector3f tan1(-10,0,12);
-    vector3f tan2(-10,5,12);
-    vector3f end(-10,10,0);
-    
-    glColor3f(1.0, 0.0, 0.0);
-    glLineWidth(6.0);
 
-    glBegin(GL_LINE_STRIP);
-    int t = 30;
-    for (int i = 0; i <= t; i++) {
-        float pos = (float) i / (float) t;
-        GLfloat x = bezierCurve( pos,start.x, tan1.x, tan2.x, end.x);
-        GLfloat y = bezierCurve( pos,start.y, tan1.y, tan2.y, end.y);
-        // In our case, the z should always be empty
-        GLfloat z = bezierCurve(pos,start.z, tan1.z, tan2.z, end.z);
-        
-        vector3f result(x, y, z);
-        glVertex3f(x, y, z);
-    }
-    glEnd();
-    
-    
-    
+
+
     
     glBindTexture(GL_TEXTURE_2D, tex->textureID);
 
@@ -254,7 +238,32 @@ void display()
     glPushMatrix();
     glRotatef(-90, 1.0f, 0.0f, 0.0f);
     glRotatef(venusRotate, 0.0, 0.0, 1.0);
+    drawRandomSpherePoints();
     
+    for (int i=0; i<cityVertices.size()-1; i++)
+    {
+        vector3f start=cityVertices.at(i);
+        vector3f end=cityVertices.at(i+1);
+        vector3f perpBisectorDirection=vector3f((start.x+end.x)/2,(start.y+end.y)/2,(start.z+end.z)/2);
+        vector3f tan1(perpBisectorDirection.x/10*15,perpBisectorDirection.y/10*15,perpBisectorDirection.z/10*15);
+        glColor3f(1.0, 0.0, 0.0);
+        glLineWidth(12.0);
+        glBegin(GL_LINE_STRIP);
+
+        int t = 30;
+        for (int i = 0; i <= t; i++) {
+            float pos = (float) i / (float) t;
+            GLfloat x = bezierCurve( pos,start.x, tan1.x, end.x);
+            GLfloat y = bezierCurve( pos,start.y, tan1.y, end.y);
+            // In our case, the z should always be empty
+            GLfloat z = bezierCurve(pos,start.z, tan1.z, end.z);
+            
+            vector3f result(x, y, z);
+            glVertex3f(x, y, z);
+        }
+        glEnd();
+
+    }
     gluSphere(quad,10,20,20);
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -295,7 +304,6 @@ int main(int argc,char ** argv)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
     int mainWindow=glutCreateWindow(WINDOW_TITLE);
-    
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(display);
@@ -339,6 +347,12 @@ int main(int argc,char ** argv)
     
     object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
     
+    for (int i=0; i<400; i++)
+    {
+        
+        vector3f point=randomSpherePoint();
+        cityVertices.push_back(point);
+    }
 //    
 //    subWindow=glutCreateSubWindow(mainWindow, 10, 10, 500, 500);
 //    glutDisplayFunc(renderW1);
