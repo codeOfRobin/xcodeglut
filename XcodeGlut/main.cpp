@@ -36,13 +36,15 @@ int MOUSE_CURRENT_X, MOUSE_CURRENT_Y;
 int MOUSE_DELTA_X, MOUSE_DELTA_Y;
 const float MOUSE_SENSITIVITY=0.1;
 
+
+int w,h, border=6;
 loadObject object1;
 
 GLUquadric *quad;
 
 Texture* tex;
 Texture* tex2;
-
+int mainWindow,subWindow;
 
 float venusRotate;
 
@@ -141,7 +143,10 @@ void preProcessEvents()
     {
         venusRotate++;
     }
-    
+    else if (keyBoard::key[' '])
+    {
+        glutDestroyWindow(subWindow);
+    }
     
 }
 void reshape(int w, int h)
@@ -258,12 +263,30 @@ void display()
 }
 
 
+
 void renderW1()
 {
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glutSetWindow(subWindow);
+	glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-
+    
+    gluLookAt(0, 0, 0, 0, 10, 0, 0, 1, 0);
+    glPushMatrix();
+    glTranslatef(0, 10, 0);
+    glutSolidOctahedron();
+    glPopMatrix();
+    
+	glutSwapBuffers();
 }
+
+void init() {
+    
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+    glutSwapBuffers();
+}
+
+
 int main(int argc,char ** argv)
 {
     
@@ -272,7 +295,6 @@ int main(int argc,char ** argv)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
     int mainWindow=glutCreateWindow(WINDOW_TITLE);
-
     
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
@@ -315,7 +337,12 @@ int main(int argc,char ** argv)
     
     Camera::position.y=1;
     
-    object1.load("/Users/robinmalhotra2/Desktop/Cities/tzfhx79fnc-castle/castle/castle.obj");
+    object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
+    
+//    
+//    subWindow=glutCreateSubWindow(mainWindow, 10, 10, 500, 500);
+//    glutDisplayFunc(renderW1);
+//    init();
 
     glutMainLoop();
     return 0;
