@@ -20,6 +20,14 @@
 #include "Texture.h"
 #include "loadObject.h"
 
+// Picking Stuff //
+#define RENDER					1
+#define SELECT					2
+#define BUFSIZE 1024
+GLuint selectBuf[BUFSIZE];
+GLint hits;
+int mode = RENDER;
+int cursorX,cursorY;
 
 using namespace std;
 const int WINDOW_HEIGHT=720;
@@ -80,7 +88,9 @@ void drawRandomSpherePoints()
         
         vector3f point=cityVertices.at(i);
         glTranslatef(point.x, point.y, point.z);
+        glPushName(i);
         glutSolidSphere(0.25, 10, 10);
+        glPopName();
         glPopMatrix();
     }
     
@@ -107,13 +117,13 @@ vector3f GetOGLPos(int x, int y)
 
 void mouseClick(int button,int state,int x, int y)
 {
-    vector3f Coord=GetOGLPos(x, y);
-    cout<<Coord.x<<" "<<Coord.y<<" "<<Coord.z<<endl;
-//    for (int i=0;i<cityVertices.size();i++)
-//    {
-//        if (Coord.x-cityVertices.at(i).x<CLICK_ACCURACY && Coord.z-cityVertices.at(i).z<CLICK_ACCURACY && Coord.z-cityVertices.at(i).z<CLICK_ACCURACY  ) {
-//        }
-//    }
+    
+	if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+		return;
+    
+	cursorX = x;
+	cursorY = y;
+	mode = SELECT;
 }
 
 
@@ -182,10 +192,87 @@ void reshape(int w, int h)
 }
 
 
+//---------------
+// Picking Stuff
+//---------------
+
+
+void startPicking() {
+    
+	GLint viewport[4];
+	float ratio;
+    
+	glSelectBuffer(BUFSIZE,selectBuf);
+    
+	glGetIntegerv(GL_VIEWPORT,viewport);
+    
+	glRenderMode(GL_SELECT);
+    
+	glInitNames();
+    
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+    
+	gluPickMatrix(cursorX,viewport[3]-cursorY,5,5,viewport);
+	ratio = (viewport[2]+0.0) / viewport[3];
+	gluPerspective(45,ratio,0.1,1000);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+
+void processHits2 (GLint hits, GLuint buffer[], int sw)
+{
+    GLint i, j, numberOfNames;
+    GLuint names, *ptr, minZ,*ptrNames;
+    
+    ptr = (GLuint *) buffer;
+    minZ = 0xffffffff;
+    for (i = 0; i < hits; i++) {
+        names = *ptr;
+        ptr++;
+        if (*ptr < minZ) {
+            numberOfNames = names;
+            minZ = *ptr;
+            ptrNames = ptr+2;
+        }
+        
+        ptr += names+2;
+	}
+    if (numberOfNames > 0) {
+        printf ("You picked snowman  ");
+        ptr = ptrNames;
+        for (j = 0; j < numberOfNames; j++,ptr++) {
+            printf ("%d ", *ptr);
+        }
+	}
+
+        printf("You didn't click a snowman!");
+    printf ("\n");
+    
+}
+
+void stopPicking() {
+    
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glFlush();
+	hits = glRenderMode(GL_RENDER);
+	if (hits != 0){
+		processHits2(hits,selectBuf,0);
+	}
+	mode = RENDER;
+}
+
+
 void display()
 {
     preProcessEvents();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    if (mode == SELECT) {
+		startPicking();
+	}
     glLoadIdentity();
     gluLookAt(Camera::position.x, Camera::position.y, Camera::position.z,
               Camera::position.x+Math::sind(Camera::rotationAngles.x)*Math::cosd(Camera::rotationAngles.y),
@@ -268,7 +355,10 @@ void display()
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glutSwapBuffers();
+    if (mode == SELECT)
+		stopPicking();
+	else
+		glutSwapBuffers();
 }
 
 
@@ -294,6 +384,8 @@ void init() {
 	glEnable(GL_CULL_FACE);
     glutSwapBuffers();
 }
+
+
 
 
 int main(int argc,char ** argv)
