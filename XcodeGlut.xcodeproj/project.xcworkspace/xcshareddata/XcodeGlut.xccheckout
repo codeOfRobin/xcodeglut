@@ -5,15 +5,13 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>E93FA46E-4090-447C-B5F0-EE9FB9E72828</string>
+	<string>6F628AE4-0DD5-4C61-9BD9-513387274EF3</string>
 	<key>IDESourceControlProjectName</key>
 	<string>XcodeGlut</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>97DE532E-46A4-4D5E-B20D-75FCC8F4BB03</key>
 		<string>https://github.com/codeofRobin/xcodeglut.git</string>
-		<key>D9F889EA-3B16-4050-A589-2317779F873B</key>
-		<string>https://github.com/codeofRobin/Parsing-code-makefile-rapidJSON.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>XcodeGlut.xcodeproj/project.xcworkspace</string>
@@ -21,8 +19,6 @@
 	<dict>
 		<key>97DE532E-46A4-4D5E-B20D-75FCC8F4BB03</key>
 		<string>../..</string>
-		<key>D9F889EA-3B16-4050-A589-2317779F873B</key>
-		<string>../../../Parsing-code-makefile-rapidJSON</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/codeofRobin/xcodeglut.git</string>
@@ -32,14 +28,6 @@
 	<string>97DE532E-46A4-4D5E-B20D-75FCC8F4BB03</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>D9F889EA-3B16-4050-A589-2317779F873B</string>
-			<key>IDESourceControlWCCName</key>
-			<string>Parsing-code-makefile-rapidJSON</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

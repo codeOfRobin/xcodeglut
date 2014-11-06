@@ -27,6 +27,12 @@ skyBoxTexture skybox;
 
 
 Monopoly game;
+
+
+//dice stuff
+const float DICE_TOLERANCE=0.1;
+GLfloat diceHeight;
+
 // Picking Stuff //
 #define RENDER					1
 #define SELECT					2
@@ -41,7 +47,7 @@ const int WINDOW_HEIGHT=720;
 const int WINDOW_WIDTH=1200;
 const char* WINDOW_TITLE="something";
 
-const float WALKING_SPEED=0.1;
+const float WALKING_SPEED=0.01;
 float LAST_TIME;
 float CURRENT_TIME;
 float DELTA_TIME;
@@ -52,8 +58,11 @@ int MOUSE_DELTA_X, MOUSE_DELTA_Y;
 const float MOUSE_SENSITIVITY=0.1;
 
 
+
+
 int w,h, border=6;
-loadObject object1;
+loadObject object1,object2;
+
 
 GLUquadric *quad;
 
@@ -64,13 +73,24 @@ int mainWindow;
 float venusRotate;
 vector<vector3f>cityVertices;
 
+
+
+//player actions
+
+void payRent()
+{
+    cout<<"paid rent";
+}
+
 //bezier curve
+
 GLfloat bezierCurve(float t, GLfloat P0,
-                    GLfloat P1, GLfloat P2) {
-    // Cubic bezier Curve
-    GLfloat point = pow(t,2)*P0 + 2*P1*t*(1-t) + P2*pow(1-t, 2);
+                    GLfloat c1, GLfloat c2 ,GLfloat P1) {
+
+    GLfloat point=pow(1-t, 3)*P0+ 3*t*pow(1-t, 2)*c1+ 3*t*t*(1-t)*c2+pow(t, 3)*P1;
     return point;
 }
+
 
 
 vector3f randomSpherePoint()
@@ -88,7 +108,7 @@ vector3f randomSpherePoint()
 
 void drawRandomSpherePoints()
 {
-    for (int i=0; i<400; i++)
+    for (int i=0; i<40; i++)
     {
         glPushMatrix();
         
@@ -277,16 +297,29 @@ void display()
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     skybox.render();
+    
+    //dice code
+    glPushMatrix();
+    glDisable(GL_LIGHTING);
+    diceHeight=exp(-100*(float)glutGet(GLUT_ELAPSED_TIME))*cos(0.1*(float)glutGet(GLUT_ELAPSED_TIME));
+    glTranslatef(-30, diceHeight, 0);
+    object2.draw();
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
+    
     if (mode == SELECT) {
 		startPicking();
 	}
     glLoadIdentity();
     
+    //camera
     gluLookAt(Camera::position.x, Camera::position.y, Camera::position.z,
               Camera::position.x+Math::sind(Camera::rotationAngles.x)*Math::cosd(Camera::rotationAngles.y),
               Camera::position.y+Math::cosd(Camera::rotationAngles.x),
               Camera::position.z+Math::sind(Camera::rotationAngles.x)*Math::sind(Camera::rotationAngles.y),
               0.0, 1.0, 0.0);
+    
+    //stupid triangle thing
     glBegin(GL_TRIANGLES);
     glColor3f(1, 0, 0);
     glVertex3f(-1, 0,-3);
@@ -296,10 +329,10 @@ void display()
     glVertex3f(1.0f, 0.0f,-3);
     glEnd();
     
-
-
-
     
+
+
+    //floor
     glBindTexture(GL_TEXTURE_2D, tex->textureID);
 
     glBegin(GL_QUADS);
@@ -320,7 +353,7 @@ void display()
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     
-    
+    //castle
     glPushMatrix();
     object1.draw();
     glPopMatrix();
@@ -339,8 +372,9 @@ void display()
     {
         vector3f start=cityVertices.at(i);
         vector3f end=cityVertices.at(i+1);
-        vector3f perpBisectorDirection=vector3f((start.x+end.x)/2,(start.y+end.y)/2,(start.z+end.z)/2);
-        vector3f tan1(perpBisectorDirection.x/10*15,perpBisectorDirection.y/10*15,perpBisectorDirection.z/10*15);
+        vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
+        vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
+        
         glColor3f(1.0, 0.0, 0.0);
         glLineWidth(12.0);
         glBegin(GL_LINE_STRIP);
@@ -348,10 +382,10 @@ void display()
         int t = 30;
         for (int i = 0; i <= t; i++) {
             float pos = (float) i / (float) t;
-            GLfloat x = bezierCurve( pos,start.x, tan1.x, end.x);
-            GLfloat y = bezierCurve( pos,start.y, tan1.y, end.y);
-            // In our case, the z should always be empty
-            GLfloat z = bezierCurve(pos,start.z, tan1.z, end.z);
+            
+            GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
+            GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
+            GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
             
             vector3f result(x, y, z);
             glVertex3f(x, y, z);
@@ -375,10 +409,10 @@ void gameButtons()
     GLUI *glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
 
     glui_subwin2->set_main_gfx_window( mainWindow );
-    glui_subwin2->add_statictext("something");
-    glui_subwin2->add_button("soemthign");
+    GLUI_Panel *playerPanel=glui_subwin2->add_panel("player data");
+    glui_subwin2->add_statictext_to_panel(playerPanel, "something");
+    glui_subwin2->add_button_to_panel(playerPanel, "other thign",12,(GLUI_Update_CB)payRent);
 }
-
 
 
 
@@ -435,8 +469,8 @@ int main(int argc,char ** argv)
     Camera::position.y=1;
     
     object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
-    
-    for (int i=0; i<400; i++)
+    object2.load("/Users/robinmalhotra2/Downloads/dice.obj");
+    for (int i=0; i<40; i++)
     {
         
         vector3f point=randomSpherePoint();
