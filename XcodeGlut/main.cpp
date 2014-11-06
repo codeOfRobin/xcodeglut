@@ -21,6 +21,9 @@
 #include "Texture.h"
 #include "loadObject.h"
 #include "Monopoly.h"
+#include "skyBoxTexture.h"
+
+skyBoxTexture skybox;
 
 
 Monopoly game;
@@ -38,7 +41,7 @@ const int WINDOW_HEIGHT=720;
 const int WINDOW_WIDTH=1200;
 const char* WINDOW_TITLE="something";
 
-const float WALKING_SPEED=0.01;
+const float WALKING_SPEED=0.1;
 float LAST_TIME;
 float CURRENT_TIME;
 float DELTA_TIME;
@@ -268,13 +271,17 @@ void stopPicking() {
 void display()
 {
     glutSetWindow(mainWindow);
+    
     glutPostRedisplay();
     preProcessEvents();
+    
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    skybox.render();
     if (mode == SELECT) {
 		startPicking();
 	}
     glLoadIdentity();
+    
     gluLookAt(Camera::position.x, Camera::position.y, Camera::position.z,
               Camera::position.x+Math::sind(Camera::rotationAngles.x)*Math::cosd(Camera::rotationAngles.y),
               Camera::position.y+Math::cosd(Camera::rotationAngles.x),
@@ -427,7 +434,7 @@ int main(int argc,char ** argv)
     
     Camera::position.y=1;
     
-    object1.load("/Users/robinmalhotra2/Desktop/Cities/tzfhx79fnc-castle/castle/castle.obj");
+    object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
     
     for (int i=0; i<400; i++)
     {
@@ -435,10 +442,18 @@ int main(int argc,char ** argv)
         vector3f point=randomSpherePoint();
         cityVertices.push_back(point);
     }
-
     
-    gameButtons();
 
+    gameButtons();
+    string filenames[6]={
+        "snow_positive_z.bmp",
+        "snow_negative_x.bmp",
+        "snow_negative_z.bmp",
+        "snow_positive_x.bmp",
+        "snow_positive_y.bmp",
+        "snow_negative_y.bmp",
+    };
+    skybox.loadSkyBox("/Users/robinmalhotra2/Downloads/skybox/", filenames);
     glutMainLoop();
     return 0;
 }

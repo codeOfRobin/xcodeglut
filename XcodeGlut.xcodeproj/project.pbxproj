@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A0875091A0BD91B00D07063 /* GLUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09DC141A0B884800153D52 /* GLUI.framework */; };
+		7A08750C1A0BE27C00D07063 /* skyBoxTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A08750A1A0BE27C00D07063 /* skyBoxTexture.cpp */; };
 		7A09497F19F460DC0052E044 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A09497E19F460DC0052E044 /* main.cpp */; };
 		7A09498119F460DC0052E044 /* XcodeGlut.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7A09498019F460DC0052E044 /* XcodeGlut.1 */; };
 		7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498719F460E80052E044 /* OpenAL.framework */; };
 		7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498819F460E80052E044 /* OpenGL.framework */; };
 		7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498B19F460EE0052E044 /* GLUT.framework */; };
-		7A09DC151A0B884800153D52 /* GLUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09DC141A0B884800153D52 /* GLUI.framework */; };
 		7A7AD5E11A0BD82B0034D9BA /* Location.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */; };
 		7A7AD5E21A0BD82B0034D9BA /* Monopoly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */; };
 		7A7AD5E31A0BD82B0034D9BA /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DF1A0BD82B0034D9BA /* Player.cpp */; };
@@ -39,6 +40,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7A08750A1A0BE27C00D07063 /* skyBoxTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = skyBoxTexture.cpp; sourceTree = "<group>"; };
+		7A08750B1A0BE27C00D07063 /* skyBoxTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = skyBoxTexture.h; sourceTree = "<group>"; };
 		7A09497B19F460DC0052E044 /* XcodeGlut */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XcodeGlut; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A09497E19F460DC0052E044 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7A09498019F460DC0052E044 /* XcodeGlut.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = XcodeGlut.1; sourceTree = "<group>"; };
@@ -73,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A09DC151A0B884800153D52 /* GLUI.framework in Frameworks */,
+				7A0875091A0BD91B00D07063 /* GLUI.framework in Frameworks */,
 				7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */,
 				7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */,
 				7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */,
@@ -114,6 +117,8 @@
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
 				7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
+				7A08750A1A0BE27C00D07063 /* skyBoxTexture.cpp */,
+				7A08750B1A0BE27C00D07063 /* skyBoxTexture.h */,
 				7AED624619F71236002E7440 /* Texture.cpp */,
 				7AED624719F71236002E7440 /* Texture.h */,
 				7AED624319F709F6002E7440 /* Math.cpp */,
@@ -198,6 +203,7 @@
 				7AED624519F709F6002E7440 /* Math.cpp in Sources */,
 				7A7AD5E31A0BD82B0034D9BA /* Player.cpp in Sources */,
 				7A84E4A819F6B39F00E0EAA8 /* Keyboard.cpp in Sources */,
+				7A08750C1A0BE27C00D07063 /* skyBoxTexture.cpp in Sources */,
 				7AE8527D19FA637000E6E795 /* loadObject.cpp in Sources */,
 				7A7AD5E11A0BD82B0034D9BA /* Location.cpp in Sources */,
 				7A7AD5E21A0BD82B0034D9BA /* Monopoly.cpp in Sources */,
