@@ -12,6 +12,10 @@
 		7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498719F460E80052E044 /* OpenAL.framework */; };
 		7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498819F460E80052E044 /* OpenGL.framework */; };
 		7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498B19F460EE0052E044 /* GLUT.framework */; };
+		7A09DC151A0B884800153D52 /* GLUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09DC141A0B884800153D52 /* GLUI.framework */; };
+		7A7AD5E11A0BD82B0034D9BA /* Location.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */; };
+		7A7AD5E21A0BD82B0034D9BA /* Monopoly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */; };
+		7A7AD5E31A0BD82B0034D9BA /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DF1A0BD82B0034D9BA /* Player.cpp */; };
 		7A84E4A819F6B39F00E0EAA8 /* Keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4A619F6B39F00E0EAA8 /* Keyboard.cpp */; };
 		7A84E4AD19F6B3CB00E0EAA8 /* mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */; };
 		7A84E4AE19F6B3CB00E0EAA8 /* Vector3f.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */; };
@@ -41,7 +45,13 @@
 		7A09498719F460E80052E044 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		7A09498819F460E80052E044 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
-		7A38DDE519F7DA59000DBF32 /* airplane.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = airplane.bmp; sourceTree = "<group>"; };
+		7A09DC141A0B884800153D52 /* GLUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUI.framework; path = ../../../../Library/Frameworks/GLUI.framework; sourceTree = "<group>"; };
+		7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Location.cpp; sourceTree = "<group>"; };
+		7A7AD5DC1A0BD82B0034D9BA /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
+		7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Monopoly.cpp; sourceTree = "<group>"; };
+		7A7AD5DE1A0BD82B0034D9BA /* Monopoly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Monopoly.h; sourceTree = "<group>"; };
+		7A7AD5DF1A0BD82B0034D9BA /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
+		7A7AD5E01A0BD82B0034D9BA /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		7A84E4A619F6B39F00E0EAA8 /* Keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Keyboard.cpp; sourceTree = "<group>"; };
 		7A84E4A719F6B39F00E0EAA8 /* Keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mouse.cpp; sourceTree = "<group>"; };
@@ -63,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A09DC151A0B884800153D52 /* GLUI.framework in Frameworks */,
 				7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */,
 				7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */,
 				7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */,
@@ -75,6 +86,7 @@
 		7A09497219F460DC0052E044 = {
 			isa = PBXGroup;
 			children = (
+				7A09DC141A0B884800153D52 /* GLUI.framework */,
 				7A09498B19F460EE0052E044 /* GLUT.framework */,
 				7A09498719F460E80052E044 /* OpenAL.framework */,
 				7A09498819F460E80052E044 /* OpenGL.framework */,
@@ -94,9 +106,9 @@
 		7A09497D19F460DC0052E044 /* XcodeGlut */ = {
 			isa = PBXGroup;
 			children = (
+				7A7AD5E41A0BD83D0034D9BA /* data */,
 				7AE8527B19FA637000E6E795 /* loadObject.cpp */,
 				7AE8527C19FA637000E6E795 /* loadObject.h */,
-				7A38DDE519F7DA59000DBF32 /* airplane.bmp */,
 				7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */,
 				7A84E4AA19F6B3CB00E0EAA8 /* mouse.h */,
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
@@ -113,6 +125,19 @@
 				7A09498019F460DC0052E044 /* XcodeGlut.1 */,
 			);
 			path = XcodeGlut;
+			sourceTree = "<group>";
+		};
+		7A7AD5E41A0BD83D0034D9BA /* data */ = {
+			isa = PBXGroup;
+			children = (
+				7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */,
+				7A7AD5DC1A0BD82B0034D9BA /* Location.h */,
+				7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */,
+				7A7AD5DE1A0BD82B0034D9BA /* Monopoly.h */,
+				7A7AD5DF1A0BD82B0034D9BA /* Player.cpp */,
+				7A7AD5E01A0BD82B0034D9BA /* Player.h */,
+			);
+			name = data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,8 +196,11 @@
 				7A84E4AE19F6B3CB00E0EAA8 /* Vector3f.cpp in Sources */,
 				7A84E4B119F6E74200E0EAA8 /* Camera.cpp in Sources */,
 				7AED624519F709F6002E7440 /* Math.cpp in Sources */,
+				7A7AD5E31A0BD82B0034D9BA /* Player.cpp in Sources */,
 				7A84E4A819F6B39F00E0EAA8 /* Keyboard.cpp in Sources */,
 				7AE8527D19FA637000E6E795 /* loadObject.cpp in Sources */,
+				7A7AD5E11A0BD82B0034D9BA /* Location.cpp in Sources */,
+				7A7AD5E21A0BD82B0034D9BA /* Monopoly.cpp in Sources */,
 				7A84E4AD19F6B3CB00E0EAA8 /* mouse.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -255,6 +283,10 @@
 		7A09498519F460DC0052E044 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -264,6 +296,10 @@
 		7A09498619F460DC0052E044 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";

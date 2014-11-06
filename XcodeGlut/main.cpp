@@ -12,6 +12,7 @@
 #include <OpenAL/alc.h>
 #include <GLUT/GLUT.h>
 #include <stdio.h>
+#include <GLUI/GLUI.h>
 #include "Math.h"
 #include "Vector3f.h"
 #include "mouse.h"
@@ -19,7 +20,10 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "loadObject.h"
+#include "Monopoly.h"
 
+
+Monopoly game;
 // Picking Stuff //
 #define RENDER					1
 #define SELECT					2
@@ -35,7 +39,6 @@ const int WINDOW_WIDTH=1200;
 const char* WINDOW_TITLE="something";
 
 const float WALKING_SPEED=0.01;
-const float CLICK_ACCURACY=0.5;
 float LAST_TIME;
 float CURRENT_TIME;
 float DELTA_TIME;
@@ -53,7 +56,7 @@ GLUquadric *quad;
 
 Texture* tex;
 Texture* tex2;
-int mainWindow,subWindow;
+int mainWindow;
 
 float venusRotate;
 vector<vector3f>cityVertices;
@@ -170,11 +173,7 @@ void preProcessEvents()
     {
         venusRotate++;
     }
-    else if (keyBoard::key[' '])
-    {
-        glutDestroyWindow(subWindow);
-    }
-    
+
 }
 void reshape(int w, int h)
 {
@@ -186,7 +185,7 @@ void reshape(int w, int h)
     aspectRatio=float(w)/float(h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glViewport(0, 0, w ,h);
+    GLUI_Master.auto_set_viewport();
     gluPerspective(45, aspectRatio, 0.01, 100000000);
     glMatrixMode(GL_MODELVIEW);
 }
@@ -223,8 +222,8 @@ void startPicking() {
 
 void processHits2 (GLint hits, GLuint buffer[], int sw)
 {
-    GLint i, j, numberOfNames;
-    GLuint names, *ptr, minZ,*ptrNames;
+    GLint i, j, numberOfNames = 0;
+    GLuint names, *ptr, minZ,*ptrNames = nullptr;
     
     ptr = (GLuint *) buffer;
     minZ = 0xffffffff;
@@ -268,6 +267,8 @@ void stopPicking() {
 
 void display()
 {
+    glutSetWindow(mainWindow);
+    glutPostRedisplay();
     preProcessEvents();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     if (mode == SELECT) {
@@ -362,44 +363,33 @@ void display()
 }
 
 
-
-void renderW1()
+void gameButtons()
 {
-    glutSetWindow(subWindow);
-	glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-    
-    gluLookAt(0, 0, 0, 0, 10, 0, 0, 1, 0);
-    glPushMatrix();
-    glTranslatef(0, 10, 0);
-    glutSolidOctahedron();
-    glPopMatrix();
-    
-	glutSwapBuffers();
+    GLUI *glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
+
+    glui_subwin2->set_main_gfx_window( mainWindow );
+    glui_subwin2->add_statictext("something");
+    glui_subwin2->add_button("soemthign");
 }
 
-void init() {
-    
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-    glutSwapBuffers();
-}
 
 
 
 
 int main(int argc,char ** argv)
 {
+    game.startingMoney=500;
+    cout<<game.startingMoney;
     
     glutInit(&argc, argv);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
-    int mainWindow=glutCreateWindow(WINDOW_TITLE);
+    mainWindow=glutCreateWindow(WINDOW_TITLE);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutIdleFunc(display);
-    
+    GLUI_Master.set_glutIdleFunc( display );
     glutKeyboardFunc(keyBoard::keyDown);
     glutKeyboardUpFunc(keyBoard::keyUp);
     glutMouseFunc(mouseClick);
@@ -437,7 +427,7 @@ int main(int argc,char ** argv)
     
     Camera::position.y=1;
     
-    object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
+    object1.load("/Users/robinmalhotra2/Desktop/Cities/tzfhx79fnc-castle/castle/castle.obj");
     
     for (int i=0; i<400; i++)
     {
@@ -445,10 +435,9 @@ int main(int argc,char ** argv)
         vector3f point=randomSpherePoint();
         cityVertices.push_back(point);
     }
-//    
-//    subWindow=glutCreateSubWindow(mainWindow, 10, 10, 500, 500);
-//    glutDisplayFunc(renderW1);
-//    init();
+
+    
+    gameButtons();
 
     glutMainLoop();
     return 0;
