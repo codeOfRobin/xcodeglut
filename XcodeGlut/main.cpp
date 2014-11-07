@@ -31,7 +31,9 @@ Monopoly game;
 
 //dice stuff
 const float DICE_TOLERANCE=0.1;
-GLfloat diceHeight;
+int facevalue;
+GLfloat diceRotate=0;
+int i = 0;
 
 // Picking Stuff //
 #define RENDER					1
@@ -80,6 +82,13 @@ vector<vector3f>cityVertices;
 void payRent()
 {
     cout<<"paid rent";
+}
+
+int getDiceFace()
+{
+    srand(time(NULL));
+    int facevalue = (rand() % 6) + 1;
+    return facevalue;
 }
 
 //bezier curve
@@ -298,18 +307,7 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     skybox.render();
     
-    //dice code
-    glPushMatrix();
-    glDisable(GL_LIGHTING);
-    diceHeight=exp(-100*(float)glutGet(GLUT_ELAPSED_TIME))*cos(0.1*(float)glutGet(GLUT_ELAPSED_TIME));
-    glTranslatef(-30, diceHeight, 0);
-    object2.draw();
-    glEnable(GL_LIGHTING);
-    glPopMatrix();
-    
-    if (mode == SELECT) {
-		startPicking();
-	}
+
     glLoadIdentity();
     
     //camera
@@ -330,7 +328,65 @@ void display()
     glEnd();
     
     
+    //dice code
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    vector3f start=vector3f(-150, 100, 10);
+    vector3f end=vector3f(-10,0,0);
+    vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
+    vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
+    
+    glColor3f(1.0, 0.0, 0.0);
+    glLineWidth(12.0);
+    int t=360;
+    if (i<=t)
+    {
+        diceRotate++;
+        i++;
 
+    }
+    float pos = (float) i / (float) t;
+    
+    GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
+    GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
+    GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
+    cout<<i;
+    glTranslatef(10, +10, 0);
+    glTranslatef(x, y, z);
+
+    if (facevalue==1)
+    {
+        glRotatef(90, 0, 1, 0);
+    }
+    else if (facevalue==2)
+    {
+        glRotatef(-90, 0, 0, 1);
+    }
+    else if (facevalue==3)
+    {
+        glRotatef(180, 0, 1, 0);
+    }
+    else if (facevalue==4)
+    {
+        glRotatef(0, 0, 1, 0);
+    }
+    else if (facevalue==5)
+    {
+        glRotatef(90, 0, 0, 1);
+    }
+    else if (facevalue==6)
+    {
+        glRotatef(-90, 0, 1, 0);
+    }
+    
+    glRotatef(diceRotate, 1, 1, 1);
+    object2.draw();
+    
+    glPopMatrix();
+    
+    if (mode == SELECT) {
+		startPicking();
+	}
 
     //floor
     glBindTexture(GL_TEXTURE_2D, tex->textureID);
@@ -358,44 +414,44 @@ void display()
     object1.draw();
     glPopMatrix();
     
-    //globe
-    glTranslatef(-10.0, 10.0, 0.0);
-    glBindTexture(GL_TEXTURE_2D, tex2->textureID);
-    gluQuadricTexture(quad,1);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glRotatef(-90, 1.0f, 0.0f, 0.0f);
-    glRotatef(venusRotate, 0.0, 0.0, 1.0);
-    drawRandomSpherePoints();
-    
-    for (int i=0; i<cityVertices.size()-1; i++)
-    {
-        vector3f start=cityVertices.at(i);
-        vector3f end=cityVertices.at(i+1);
-        vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
-        vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
-        
-        glColor3f(1.0, 0.0, 0.0);
-        glLineWidth(12.0);
-        glBegin(GL_LINE_STRIP);
-
-        int t = 30;
-        for (int i = 0; i <= t; i++) {
-            float pos = (float) i / (float) t;
-            
-            GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
-            GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
-            GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
-            
-            vector3f result(x, y, z);
-            glVertex3f(x, y, z);
-        }
-        glEnd();
-
-    }
-    gluSphere(quad,10,20,20);
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D, 0);
+//    //globe
+//    glTranslatef(-10.0, 10.0, 0.0);
+//    glBindTexture(GL_TEXTURE_2D, tex2->textureID);
+//    gluQuadricTexture(quad,1);
+//    glMatrixMode(GL_MODELVIEW);
+//    glPushMatrix();
+//    glRotatef(-90, 1.0f, 0.0f, 0.0f);
+//    glRotatef(venusRotate, 0.0, 0.0, 1.0);
+//    drawRandomSpherePoints();
+//    
+//    for (int i=0; i<cityVertices.size()-1; i++)
+//    {
+//        vector3f start=cityVertices.at(i);
+//        vector3f end=cityVertices.at(i+1);
+//        vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
+//        vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
+//        
+//        glColor3f(1.0, 0.0, 0.0);
+//        glLineWidth(12.0);
+//        glBegin(GL_LINE_STRIP);
+//
+//        int t = 30;
+//        for (int i = 0; i <= t; i++) {
+//            float pos = (float) i / (float) t;
+//            
+//            GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
+//            GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
+//            GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
+//            
+//            vector3f result(x, y, z);
+//            glVertex3f(x, y, z);
+//        }
+//        glEnd();
+//
+//    }
+//    gluSphere(quad,10,20,20);
+//    glPopMatrix();
+//    glBindTexture(GL_TEXTURE_2D, 0);
 
     if (mode == SELECT)
 		stopPicking();
@@ -468,8 +524,8 @@ int main(int argc,char ** argv)
     
     Camera::position.y=1;
     
-    object1.load("/Volumes/UNTITLED/Cities/tzfhx79fnc-castle/castle/castle.obj");
-    object2.load("/Users/robinmalhotra2/Downloads/dice.obj");
+    object1.load("/Users/robinmalhotra2/Downloads/Cities/tzfhx79fnc-castle/castle/castle.obj");
+    object2.load("/Users/robinmalhotra2/Downloads/dice-2.obj");
     for (int i=0; i<40; i++)
     {
         
@@ -477,7 +533,7 @@ int main(int argc,char ** argv)
         cityVertices.push_back(point);
     }
     
-
+    facevalue = getDiceFace();
     gameButtons();
     string filenames[6]={
         "snow_positive_z.bmp",

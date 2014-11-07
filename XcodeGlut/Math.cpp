@@ -21,3 +21,8 @@ double Math::cosd(double theta)
 {
     return cos(degreesToRadians(theta));
 }
+
+double Math::fract(double f)
+{
+    return f-(long)f;
+}

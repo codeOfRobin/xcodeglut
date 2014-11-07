@@ -17,6 +17,6 @@ public:
    static double degreesToRadians(double degrees);
     static double sind(double theta);
     static double cosd(double theta);
-
+    static double fract(double f);
 };
 #endif /* defined(__XcodeGlut__Math__) */
