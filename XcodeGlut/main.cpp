@@ -91,6 +91,11 @@ int getDiceFace()
     return facevalue;
 }
 
+void reportCheating(int id)
+{
+    cout<<"repos";
+}
+
 //bezier curve
 
 GLfloat bezierCurve(float t, GLfloat P0,
@@ -350,7 +355,6 @@ void display()
     GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
     GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
     GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
-    cout<<i;
     glTranslatef(10, +10, 0);
     glTranslatef(x, y, z);
 
@@ -459,15 +463,59 @@ void display()
 		glutSwapBuffers();
 }
 
-
+//game buttons
+GLUI *glui_subwin2;
+GLUI_Panel *playerPanel,*controlsPanel, *taxPanel, *cardsPanel, *jailFinePanel;
+GLUI_Listbox *moneyListBox,*currentLocationListBox,*playerIDListBox,*reportCheatingListBox,*mortgageListBox,*taxAmountListBox;
+GLUI_Listbox *cardNameListBox,*cardOwnerListBox,*cardStatusListBox,*cardMortgageListBox,*cardTaxListBox;
+GLUI_RadioGroup *taxRadio;
 void gameButtons()
 {
-    GLUI *glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
+    int money=1299;
+    string currentLocation="Medittersoemthign";
+    int playerID=2;
+    
+    
+     glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
 
     glui_subwin2->set_main_gfx_window( mainWindow );
-    GLUI_Panel *playerPanel=glui_subwin2->add_panel("player data");
+    playerPanel=glui_subwin2->add_panel("player data");
     glui_subwin2->add_statictext_to_panel(playerPanel, "something");
+
+    moneyListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "cash", NULL, 1, (GLUI_Update_CB)NULL);
+    moneyListBox->add_item(1,to_string(money).c_str());
+    
+    currentLocationListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "currentLocation",NULL, 2, (GLUI_Update_CB)NULL);
+    currentLocationListBox->add_item(2, currentLocation.c_str());
+    
+    playerIDListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "player ID", NULL,3,(GLUI_Update_CB)NULL);
+    playerIDListBox->add_item(3,to_string(playerID).c_str());
+    
+    controlsPanel=glui_subwin2->add_panel("controls");
+    glui_subwin2->add_button_to_panel(controlsPanel, "pay rent", 4,(GLUI_Update_CB)payRent);
+    reportCheatingListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "report Cheating",NULL,5,(GLUI_Update_CB)reportCheating);
+    reportCheatingListBox->add_item(1, "player1");
+    mortgageListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "mortgage",NULL,6,(GLUI_Update_CB)payRent);
+    
+    taxPanel=glui_subwin2->add_panel("Tax");
+    taxRadio=glui_subwin2->add_radiogroup_to_panel(taxPanel,NULL,7,(GLUI_Update_CB)NULL);
+    glui_subwin2->add_radiobutton_to_group(taxRadio, "percent");
+    glui_subwin2->add_radiobutton_to_group(taxRadio, "amount");
+    taxAmountListBox= glui_subwin2->add_listbox_to_panel(taxPanel,"taxAmount",NULL,7,(GLUI_Update_CB)NULL);
+    glui_subwin2->add_button_to_panel(taxPanel, "pay taxes");
     glui_subwin2->add_button_to_panel(playerPanel, "other thign",12,(GLUI_Update_CB)payRent);
+    
+    
+    cardsPanel=glui_subwin2->add_panel("cards data");
+    cardNameListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Name",NULL,8,(GLUI_Update_CB)NULL);
+    cardOwnerListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Owner",NULL,9,(GLUI_Update_CB)NULL);
+    cardStatusListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Status",NULL,10,(GLUI_Update_CB)NULL);
+    cardMortgageListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Mortgage", NULL,11, (GLUI_Update_CB)NULL);
+    cardTaxListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Tax",NULL,12,(GLUI_Update_CB)NULL);
+    
+    jailFinePanel=glui_subwin2->add_panel("jailFine");
+    glui_subwin2->add_button_to_panel(jailFinePanel, "pay JailFine",13,(GLUI_Update_CB)NULL);
+    
 }
 
 
