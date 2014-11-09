@@ -12,8 +12,9 @@
 #include <iostream>
 class Player
 {
+public:
     float currentMoney;
-    std::string currentPosition;
+    int currentPosition;
     
 };
 #endif /* defined(____Player__) */

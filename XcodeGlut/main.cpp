@@ -518,7 +518,28 @@ void gameButtons()
     
 }
 
+//locations at distance
 
+vector<int> locationsFromTraversal;
+void locationsAtDistance(int location, int distance)
+{
+    if (distance==0)
+    {
+        locationsFromTraversal.push_back(location);
+    }
+    else
+    {
+        for (int i=0; i<game.locations.size(); i++)
+        {
+            if (game.graph[location][i]==1)
+            {
+                locationsAtDistance(i, distance-1);
+
+            }
+
+        }
+    }
+}
 
 
 int main(int argc,char ** argv)

@@ -28,8 +28,8 @@ public:
     vector <Location> locations;
     vector <Player> players;
     
-    void payRent(int playerID);
-    void payTaxes(int playerID);
+    void payRent(int playerID, float rent);
+    void payTaxes(int playerID, float taxes);//taxes in amount
     void movePiece(int playerID, int location);
 };
 #endif /* defined(____Monopoly__) */
