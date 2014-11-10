@@ -21,6 +21,8 @@ public:
     int group;
     int locationNo;
     std::string* name;
+    int owner;//-1 is owned by bank, otherwise player ID
+    int status;//0,1,2,3 for house 1,2,3 adn hotel
     
 };
 

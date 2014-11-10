@@ -27,9 +27,13 @@ public:
     bool graph[MAX_NO_OF_CITIES][MAX_NO_OF_CITIES];
     vector <Location> locations;
     vector <Player> players;
+    vector<int> skipCheats;
+    vector<int> rentCheats;
     
     void payRent(int playerID, float rent);
     void payTaxes(int playerID, float taxes);//taxes in amount
     void movePiece(int playerID, int location);
+    void mortgage(int playerID, int location);
+    void payJailFine(int playerID);
 };
 #endif /* defined(____Monopoly__) */

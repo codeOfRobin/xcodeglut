@@ -30,7 +30,6 @@ Monopoly game;
 
 
 //dice stuff
-const float DICE_TOLERANCE=0.1;
 int facevalue;
 GLfloat diceRotate=0;
 int i = 0;
@@ -77,6 +76,30 @@ vector<vector3f>cityVertices;
 
 
 
+//locations at distance
+
+vector<int> locationsFromTraversal;
+void locationsAtDistance(int location, int distance)
+{
+    if (distance==0)
+    {
+        locationsFromTraversal.push_back(location);
+    }
+    else
+    {
+        for (int i=0; i<game.locations.size(); i++)
+        {
+            if (game.graph[location][i]==1)
+            {
+                locationsAtDistance(i, distance-1);
+                
+            }
+            
+        }
+    }
+}
+
+
 //player actions
 
 void payRent()
@@ -86,7 +109,7 @@ void payRent()
 
 int getDiceFace()
 {
-    srand(time(NULL));
+    srand((int)time(NULL));
     int facevalue = (rand() % 6) + 1;
     return facevalue;
 }
@@ -282,8 +305,10 @@ void processHits2 (GLint hits, GLuint buffer[], int sw)
             printf ("%d ", *ptr);
         }
 	}
+    
 
-        printf("You didn't click a snowman!");
+
+    printf("You didn't click a snowman!");
     printf ("\n");
     
 }
@@ -465,7 +490,7 @@ void display()
 
 //game buttons
 GLUI *glui_subwin2;
-GLUI_Panel *playerPanel,*controlsPanel, *taxPanel, *cardsPanel, *jailFinePanel;
+GLUI_Panel *playerPanel,*controlsPanel, *taxPanel, *cardsPanel, *jailFinePanel, *mortgagePanel;
 GLUI_Listbox *moneyListBox,*currentLocationListBox,*playerIDListBox,*reportCheatingListBox,*mortgageListBox,*taxAmountListBox;
 GLUI_Listbox *cardNameListBox,*cardOwnerListBox,*cardStatusListBox,*cardMortgageListBox,*cardTaxListBox;
 GLUI_RadioGroup *taxRadio;
@@ -477,7 +502,7 @@ void gameButtons()
     
     
      glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
-
+    
     glui_subwin2->set_main_gfx_window( mainWindow );
     playerPanel=glui_subwin2->add_panel("player data");
     glui_subwin2->add_statictext_to_panel(playerPanel, "something");
@@ -493,8 +518,9 @@ void gameButtons()
     
     controlsPanel=glui_subwin2->add_panel("controls");
     glui_subwin2->add_button_to_panel(controlsPanel, "pay rent", 4,(GLUI_Update_CB)payRent);
-    reportCheatingListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "report Cheating",NULL,5,(GLUI_Update_CB)reportCheating);
+    reportCheatingListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "player who is Cheating",NULL,5,(GLUI_Update_CB)reportCheating);
     reportCheatingListBox->add_item(1, "player1");
+    glui_subwin2->add_button("report cheating");
     mortgageListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "mortgage",NULL,6,(GLUI_Update_CB)payRent);
     
     taxPanel=glui_subwin2->add_panel("Tax");
@@ -502,8 +528,8 @@ void gameButtons()
     glui_subwin2->add_radiobutton_to_group(taxRadio, "percent");
     glui_subwin2->add_radiobutton_to_group(taxRadio, "amount");
     taxAmountListBox= glui_subwin2->add_listbox_to_panel(taxPanel,"taxAmount",NULL,7,(GLUI_Update_CB)NULL);
-    glui_subwin2->add_button_to_panel(taxPanel, "pay taxes");
-    glui_subwin2->add_button_to_panel(playerPanel, "other thign",12,(GLUI_Update_CB)payRent);
+    glui_subwin2->add_button_to_panel(taxPanel, "pay taxes",8,(GLUI_Update_CB)NULL);
+    glui_subwin2->add_button_to_panel(playerPanel, "other thign",1,(GLUI_Update_CB)payRent);
     
     
     cardsPanel=glui_subwin2->add_panel("cards data");
@@ -516,29 +542,8 @@ void gameButtons()
     jailFinePanel=glui_subwin2->add_panel("jailFine");
     glui_subwin2->add_button_to_panel(jailFinePanel, "pay JailFine",13,(GLUI_Update_CB)NULL);
     
-}
 
-//locations at distance
-
-vector<int> locationsFromTraversal;
-void locationsAtDistance(int location, int distance)
-{
-    if (distance==0)
-    {
-        locationsFromTraversal.push_back(location);
-    }
-    else
-    {
-        for (int i=0; i<game.locations.size(); i++)
-        {
-            if (game.graph[location][i]==1)
-            {
-                locationsAtDistance(i, distance-1);
-
-            }
-
-        }
-    }
+    
 }
 
 
