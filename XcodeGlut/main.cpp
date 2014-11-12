@@ -22,14 +22,16 @@
 #include "loadObject.h"
 #include "Monopoly.h"
 #include "skyBoxTexture.h"
-
+#include "drawtext.h"
 skyBoxTexture skybox;
-
+dtx_font *font;
 
 Monopoly game;
 
 //text
-struct dtx_font *font;
+struct dtx_font *font2;
+const char *text = "Some sample text goes here.\n"
+	"Yada yada yada, more text...\n" 	"foobar xyzzy\n";
 
 //dice stuff
 int facevalue;
@@ -503,7 +505,7 @@ void display()
     glVertex2f(10.0, 10.0);
     glVertex2f(0.0, 10.0);
     glEnd();
-    
+    dtx_string(text);
     // Making sure we can render 3d again
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -643,15 +645,10 @@ int main(int argc,char ** argv)
         "snow_negative_y.bmp",
     };
     skybox.loadSkyBox("/Users/robinmalhotra2/Downloads/skybox/", filenames);
-    if(!(font = dtx_open_font("serif.ttf", 24))) {
-            fprintf(stderr, "failed to open font\n");
+    if(!(font = dtx_open_font("/Users/robinmalhotra2/Developer/xcodeglut/XcodeGlut/Starjout.ttf", 24))) {
+        		fprintf(stderr, "failed to open font\n");
         	return 1;
-         	}
-     	/* XXX select the font and size to render with by calling dtx_use_font
-         42 	 * if you want to use a different font size, you must first call:
-         43 	 * dtx_prepare(font, size) once.
-         44 	 */
-    dtx_use_font(font, 24);
+    }
     glutMainLoop();
     return 0;
 }

@@ -14,6 +14,8 @@
 		7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498719F460E80052E044 /* OpenAL.framework */; };
 		7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498819F460E80052E044 /* OpenGL.framework */; };
 		7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498B19F460EE0052E044 /* GLUT.framework */; };
+		7A574A111A13F7590024A9E9 /* libdrawtext.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A574A101A13F7590024A9E9 /* libdrawtext.dylib */; };
+		7A574A121A13F8C70024A9E9 /* libdrawtext.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7A574A101A13F7590024A9E9 /* libdrawtext.dylib */; };
 		7A7AD5E11A0BD82B0034D9BA /* Location.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */; };
 		7A7AD5E21A0BD82B0034D9BA /* Monopoly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */; };
 		7A7AD5E31A0BD82B0034D9BA /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DF1A0BD82B0034D9BA /* Player.cpp */; };
@@ -30,9 +32,10 @@
 		7A09497919F460DC0052E044 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 10;
 			files = (
+				7A574A121A13F8C70024A9E9 /* libdrawtext.dylib in CopyFiles */,
 				7A09498119F460DC0052E044 /* XcodeGlut.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
@@ -50,6 +53,13 @@
 		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		7A09DC141A0B884800153D52 /* GLUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUI.framework; path = ../../../../Library/Frameworks/GLUI.framework; sourceTree = "<group>"; };
 		7A574A0A1A13E6880024A9E9 /* Starjout.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Starjout.ttf; path = ../../../Downloads/star_jedi/starjout/Starjout.ttf; sourceTree = "<group>"; };
+		7A574A101A13F7590024A9E9 /* libdrawtext.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdrawtext.dylib; path = ../../../../usr/local/Cellar/libdrawtext/0.1/lib/libdrawtext.dylib; sourceTree = "<group>"; };
+		7A574A141A13F9E70024A9E9 /* drawgl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = drawgl.c; sourceTree = "<group>"; };
+		7A574A151A13F9E70024A9E9 /* drawtext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = drawtext.h; sourceTree = "<group>"; };
+		7A574A161A13F9E70024A9E9 /* drawtext_impl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = drawtext_impl.h; sourceTree = "<group>"; };
+		7A574A171A13F9E70024A9E9 /* font.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = font.c; sourceTree = "<group>"; };
+		7A574A181A13F9E70024A9E9 /* utf8.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utf8.c; sourceTree = "<group>"; };
+		7A574A191A13FA720024A9E9 /* Starjout.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Starjout.ttf; sourceTree = "<group>"; };
 		7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Location.cpp; sourceTree = "<group>"; };
 		7A7AD5DC1A0BD82B0034D9BA /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Monopoly.cpp; sourceTree = "<group>"; };
@@ -77,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A574A111A13F7590024A9E9 /* libdrawtext.dylib in Frameworks */,
 				7A0875091A0BD91B00D07063 /* GLUI.framework in Frameworks */,
 				7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */,
 				7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */,
@@ -90,6 +101,7 @@
 		7A09497219F460DC0052E044 = {
 			isa = PBXGroup;
 			children = (
+				7A574A101A13F7590024A9E9 /* libdrawtext.dylib */,
 				7A09DC141A0B884800153D52 /* GLUI.framework */,
 				7A09498B19F460EE0052E044 /* GLUT.framework */,
 				7A09498719F460E80052E044 /* OpenAL.framework */,
@@ -110,9 +122,11 @@
 		7A09497D19F460DC0052E044 /* XcodeGlut */ = {
 			isa = PBXGroup;
 			children = (
+				7A574A131A13F9E70024A9E9 /* src */,
 				7A7AD5E41A0BD83D0034D9BA /* data */,
 				7AE8527B19FA637000E6E795 /* loadObject.cpp */,
 				7AE8527C19FA637000E6E795 /* loadObject.h */,
+				7A574A191A13FA720024A9E9 /* Starjout.ttf */,
 				7A84E4A919F6B3CB00E0EAA8 /* mouse.cpp */,
 				7A84E4AA19F6B3CB00E0EAA8 /* mouse.h */,
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
@@ -132,6 +146,18 @@
 				7A09498019F460DC0052E044 /* XcodeGlut.1 */,
 			);
 			path = XcodeGlut;
+			sourceTree = "<group>";
+		};
+		7A574A131A13F9E70024A9E9 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				7A574A141A13F9E70024A9E9 /* drawgl.c */,
+				7A574A151A13F9E70024A9E9 /* drawtext.h */,
+				7A574A161A13F9E70024A9E9 /* drawtext_impl.h */,
+				7A574A171A13F9E70024A9E9 /* font.c */,
+				7A574A181A13F9E70024A9E9 /* utf8.c */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		7A7AD5E41A0BD83D0034D9BA /* data */ = {
@@ -296,6 +322,11 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Applications/Xcode\\ 3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
+					usr/local/include,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/libdrawtext/0.1/lib,
@@ -313,6 +344,11 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Applications/Xcode\\ 3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
+					usr/local/include,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/libdrawtext/0.1/lib,
