@@ -49,6 +49,7 @@
 		7A09498819F460E80052E044 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		7A09DC141A0B884800153D52 /* GLUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUI.framework; path = ../../../../Library/Frameworks/GLUI.framework; sourceTree = "<group>"; };
+		7A574A0A1A13E6880024A9E9 /* Starjout.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Starjout.ttf; path = ../../../Downloads/star_jedi/starjout/Starjout.ttf; sourceTree = "<group>"; };
 		7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Location.cpp; sourceTree = "<group>"; };
 		7A7AD5DC1A0BD82B0034D9BA /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
 		7A7AD5DD1A0BD82B0034D9BA /* Monopoly.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Monopoly.cpp; sourceTree = "<group>"; };
@@ -117,6 +118,7 @@
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
 				7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
+				7A574A0A1A13E6880024A9E9 /* Starjout.ttf */,
 				7A08750A1A0BE27C00D07063 /* skyBoxTexture.cpp */,
 				7A08750B1A0BE27C00D07063 /* skyBoxTexture.h */,
 				7AED624619F71236002E7440 /* Texture.cpp */,
@@ -294,6 +296,10 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/libdrawtext/0.1/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -307,6 +313,10 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/libdrawtext/0.1/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

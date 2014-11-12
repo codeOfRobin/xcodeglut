@@ -28,6 +28,8 @@ skyBoxTexture skybox;
 
 Monopoly game;
 
+//text
+struct dtx_font *font;
 
 //dice stuff
 int facevalue;
@@ -481,6 +483,32 @@ void display()
 //    gluSphere(quad,10,20,20);
 //    glPopMatrix();
 //    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, WINDOW_WIDTH, WINDOW_HEIGHT, 0.0, -1.0, 10.0);
+    glMatrixMode(GL_MODELVIEW);
+    //glPushMatrix();        ----Not sure if I need this
+    glLoadIdentity();
+    glDisable(GL_CULL_FACE);
+    
+    glClear(GL_DEPTH_BUFFER_BIT);
+    
+    glBegin(GL_QUADS);
+    glColor3f(1.0f, 0.0f, 0.0);
+    glVertex2f(0.0, 0.0);
+    glVertex2f(10.0, 0.0);
+    glVertex2f(10.0, 10.0);
+    glVertex2f(0.0, 10.0);
+    glEnd();
+    
+    // Making sure we can render 3d again
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    //glPopMatrix();        ----and this?
 
     if (mode == SELECT)
 		stopPicking();
@@ -549,9 +577,6 @@ void gameButtons()
 
 int main(int argc,char ** argv)
 {
-    game.startingMoney=500;
-    cout<<game.startingMoney;
-    
     glutInit(&argc, argv);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -618,6 +643,15 @@ int main(int argc,char ** argv)
         "snow_negative_y.bmp",
     };
     skybox.loadSkyBox("/Users/robinmalhotra2/Downloads/skybox/", filenames);
+    if(!(font = dtx_open_font("serif.ttf", 24))) {
+            fprintf(stderr, "failed to open font\n");
+        	return 1;
+         	}
+     	/* XXX select the font and size to render with by calling dtx_use_font
+         42 	 * if you want to use a different font size, you must first call:
+         43 	 * dtx_prepare(font, size) once.
+         44 	 */
+    dtx_use_font(font, 24);
     glutMainLoop();
     return 0;
 }
