@@ -486,7 +486,7 @@ void display()
         glPopMatrix();
     }
     
-    if (globe==true)
+    if (globe==true||menu==true)
     {
         
         if (mode == SELECT) {
@@ -539,7 +539,7 @@ void display()
         glMatrixMode(GL_PROJECTION);
         glPushMatrix();
         glLoadIdentity();
-        glOrtho(0.0, WINDOW_WIDTH, WINDOW_HEIGHT, 0.0, -1.0, 10.0);
+        glOrtho(0.0, WINDOW_WIDTH, WINDOW_HEIGHT, 0.0, 0.0, 1.0);
         glMatrixMode(GL_MODELVIEW);
         //glPushMatrix();        ----Not sure if I need this
         glLoadIdentity();
@@ -553,7 +553,6 @@ void display()
         glScalef(2, 2, 2);
         glColor3f(1, 1, 0);
         dtx_string(menuText[0].c_str());
-        cout<<cursorX<<" "<<cursorY<<endl;
         glPopMatrix();
         glPushMatrix();
         glTranslatef(WINDOW_WIDTH/2-100, WINDOW_HEIGHT/4+80, 0);
