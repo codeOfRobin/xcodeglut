@@ -28,10 +28,12 @@ dtx_font *font;
 
 Monopoly game;
 
+//bools for display
+bool menu, globe=true, city;
+
 //text
 struct dtx_font *font2;
-const char *text = "Some sample text goes here.\n"
-	"Yada yada yada, more text...\n" 	"foobar xyzzy\n";
+string menuText[3]={"      Welcome to \nStar Wars Monopoly\n","\n             New Game\n","\n                 Exit\n"};
 
 //dice stuff
 int facevalue;
@@ -46,6 +48,14 @@ GLuint selectBuf[BUFSIZE];
 GLint hits;
 int mode = RENDER;
 int cursorX,cursorY;
+bool isWithinCoordinates(int upperLeftX,int upperLeftY,int lowerRightX, int lowerRightY)
+{
+    if (menu && cursorX>upperLeftX && cursorY>upperLeftY && cursorX<lowerRightX &&cursorY<lowerRightY)
+    {
+        return true;
+    }
+    return false;
+}
 
 using namespace std;
 const int WINDOW_HEIGHT=720;
@@ -156,7 +166,7 @@ void drawRandomSpherePoints()
         vector3f point=cityVertices.at(i);
         glTranslatef(point.x, point.y, point.z);
         glPushName(i);
-        glutSolidSphere(0.25, 10, 10);
+        glutSolidSphere(1.0, 10, 10);
         glPopName();
         glPopMatrix();
     }
@@ -190,7 +200,21 @@ void mouseClick(int button,int state,int x, int y)
     
 	cursorX = x;
 	cursorY = y;
+    if (menu && isWithinCoordinates(831, 295, 1006, 320) )
+    {
+        menu=false;
+        globe=true;
+        city=true;
+    }
+    else if (menu && isWithinCoordinates(880, 342, 962, 384))
+    {
+        exit(8);
+    }
+    else
+    {
 	mode = SELECT;
+
+    }
 }
 
 
@@ -236,6 +260,18 @@ void preProcessEvents()
     else if (keyBoard::key['f'])
     {
         venusRotate++;
+    }
+    else if (keyBoard::key[27])
+    {
+        menu=true;
+        globe=false;
+        city=false;
+    }
+    else if (keyBoard::key['n'])
+    {
+        menu=false;
+        city=true;
+        globe=true;
     }
 
 }
@@ -338,6 +374,8 @@ void display()
     glutPostRedisplay();
     preProcessEvents();
     
+    
+    
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     skybox.render();
     
@@ -350,170 +388,194 @@ void display()
               Camera::position.y+Math::cosd(Camera::rotationAngles.x),
               Camera::position.z+Math::sind(Camera::rotationAngles.x)*Math::sind(Camera::rotationAngles.y),
               0.0, 1.0, 0.0);
-    
-    //stupid triangle thing
-    glBegin(GL_TRIANGLES);
-    glColor3f(1, 0, 0);
-    glVertex3f(-1, 0,-3);
-    glColor3f(0, 1, 0);
-    glVertex3f(0.0f, 2.0f,-3);
-    glColor3f(0, 0, 1);
-    glVertex3f(1.0f, 0.0f,-3);
-    glEnd();
-    
-    
-    //dice code
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    vector3f start=vector3f(-150, 100, 10);
-    vector3f end=vector3f(-10,0,0);
-    vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
-    vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
-    
-    glColor3f(1.0, 0.0, 0.0);
-    glLineWidth(12.0);
-    int t=360;
-    if (i<=t)
+    if (city==true && menu==false)
     {
-        diceRotate++;
-        i++;
+        glEnable(GL_LIGHTING);
+        //stupid triangle thing
+        glBegin(GL_TRIANGLES);
+        glColor3f(1, 0, 0);
+        glVertex3f(-1, 0,-3);
+        glColor3f(0, 1, 0);
+        glVertex3f(0.0f, 2.0f,-3);
+        glColor3f(0, 0, 1);
+        glVertex3f(1.0f, 0.0f,-3);
+        glEnd();
+        
+        
+        //dice code
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        vector3f start=vector3f(-150, 100, 10);
+        vector3f end=vector3f(-10,0,0);
+        vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
+        vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
+        
+        glColor3f(1.0, 0.0, 0.0);
+        glLineWidth(12.0);
+        int t=360;
+        if (i<=t)
+        {
+            diceRotate++;
+            i++;
 
-    }
-    float pos = (float) i / (float) t;
-    
-    GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
-    GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
-    GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
-    glTranslatef(10, +10, 0);
-    glTranslatef(x, y, z);
+        }
+        float pos = (float) i / (float) t;
+        
+        GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
+        GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
+        GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
+        glTranslatef(10, +10, 0);
+        glTranslatef(x, y, z);
 
-    if (facevalue==1)
-    {
-        glRotatef(90, 0, 1, 0);
-    }
-    else if (facevalue==2)
-    {
-        glRotatef(-90, 0, 0, 1);
-    }
-    else if (facevalue==3)
-    {
-        glRotatef(180, 0, 1, 0);
-    }
-    else if (facevalue==4)
-    {
-        glRotatef(0, 0, 1, 0);
-    }
-    else if (facevalue==5)
-    {
-        glRotatef(90, 0, 0, 1);
-    }
-    else if (facevalue==6)
-    {
-        glRotatef(-90, 0, 1, 0);
-    }
-    
-    glRotatef(diceRotate, 1, 1, 1);
-    object2.draw();
-    
-    glPopMatrix();
-    
-    if (mode == SELECT) {
-		startPicking();
-	}
+        if (facevalue==1)
+        {
+            glRotatef(90, 0, 1, 0);
+        }
+        else if (facevalue==2)
+        {
+            glRotatef(-90, 0, 0, 1);
+        }
+        else if (facevalue==3)
+        {
+            glRotatef(180, 0, 1, 0);
+        }
+        else if (facevalue==4)
+        {
+            glRotatef(0, 0, 1, 0);
+        }
+        else if (facevalue==5)
+        {
+            glRotatef(90, 0, 0, 1);
+        }
+        else if (facevalue==6)
+        {
+            glRotatef(-90, 0, 1, 0);
+        }
+        
+        glRotatef(diceRotate, 1, 1, 1);
+        object2.draw();
+        
+        glPopMatrix();
+        
 
-    //floor
-    glBindTexture(GL_TEXTURE_2D, tex->textureID);
 
-    glBegin(GL_QUADS);
-    
-    glColor3f(1, 1, 1);
-    glTexCoord2f(100, 100);
-    glVertex3f(100,0,100);
-    
-    glTexCoord2f(-100, 100);
-    glVertex3f(-100,0,100);
-    
-    glTexCoord2f(-100,-100);
-    glVertex3f(-100,0,-100);
-    
-    glTexCoord2f(100,-100);
-    glVertex3f(100,0,-100);
+        //floor
+        glBindTexture(GL_TEXTURE_2D, tex->textureID);
 
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    //castle
-    glPushMatrix();
-    object1.draw();
-    glPopMatrix();
-    
-//    //globe
-//    glTranslatef(-10.0, 10.0, 0.0);
-//    glBindTexture(GL_TEXTURE_2D, tex2->textureID);
-//    gluQuadricTexture(quad,1);
-//    glMatrixMode(GL_MODELVIEW);
-//    glPushMatrix();
-//    glRotatef(-90, 1.0f, 0.0f, 0.0f);
-//    glRotatef(venusRotate, 0.0, 0.0, 1.0);
-//    drawRandomSpherePoints();
-//    
-//    for (int i=0; i<cityVertices.size()-1; i++)
-//    {
-//        vector3f start=cityVertices.at(i);
-//        vector3f end=cityVertices.at(i+1);
-//        vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
-//        vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
-//        
-//        glColor3f(1.0, 0.0, 0.0);
-//        glLineWidth(12.0);
-//        glBegin(GL_LINE_STRIP);
-//
-//        int t = 30;
-//        for (int i = 0; i <= t; i++) {
-//            float pos = (float) i / (float) t;
-//            
-//            GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
-//            GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
-//            GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
-//            
-//            vector3f result(x, y, z);
-//            glVertex3f(x, y, z);
-//        }
-//        glEnd();
-//
-//    }
-//    gluSphere(quad,10,20,20);
-//    glPopMatrix();
-//    glBindTexture(GL_TEXTURE_2D, 0);
-    
-    
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, WINDOW_WIDTH, WINDOW_HEIGHT, 0.0, -1.0, 10.0);
-    glMatrixMode(GL_MODELVIEW);
-    //glPushMatrix();        ----Not sure if I need this
-    glLoadIdentity();
-    glDisable(GL_CULL_FACE);
-    
-    glClear(GL_DEPTH_BUFFER_BIT);
-    
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.0f, 0.0);
-    glVertex2f(0.0, 0.0);
-    glVertex2f(10.0, 0.0);
-    glVertex2f(10.0, 10.0);
-    glVertex2f(0.0, 10.0);
-    glEnd();
-    dtx_string(text);
-    // Making sure we can render 3d again
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    //glPopMatrix();        ----and this?
+        glBegin(GL_QUADS);
+        
+        glColor3f(1, 1, 1);
+        glTexCoord2f(100, 100);
+        glVertex3f(100,0,100);
+        
+        glTexCoord2f(-100, 100);
+        glVertex3f(-100,0,100);
+        
+        glTexCoord2f(-100,-100);
+        glVertex3f(-100,0,-100);
+        
+        glTexCoord2f(100,-100);
+        glVertex3f(100,0,-100);
 
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        //castle
+        glPushMatrix();
+        object1.draw();
+        glPopMatrix();
+    }
+    
+    if (globe==true)
+    {
+        
+        if (mode == SELECT) {
+            startPicking();
+        }
+        //globe
+        glTranslatef(-10.0, 10.0, 0.0);
+        glBindTexture(GL_TEXTURE_2D, tex2->textureID);
+        gluQuadricTexture(quad,1);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glRotatef(-90, 1.0f, 0.0f, 0.0f);
+        glRotatef(venusRotate, 0.0, 0.0, 1.0);
+        drawRandomSpherePoints();
+        
+        for (int i=0; i<cityVertices.size()-1; i++)
+        {
+            vector3f start=cityVertices.at(i);
+            vector3f end=cityVertices.at(i+1);
+            vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
+            vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
+            
+            glColor3f(1.0, 0.0, 0.0);
+            glLineWidth(12.0);
+            glBegin(GL_LINE_STRIP);
+
+            int t = 30;
+            for (int i = 0; i <= t; i++) {
+                float pos = (float) i / (float) t;
+                
+                GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
+                GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
+                GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
+                
+                vector3f result(x, y, z);
+                glVertex3f(x, y, z);
+            }
+            glEnd();
+
+        }
+        gluSphere(quad,10,20,20);
+        glPopMatrix();
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    
+    if (menu==true)
+    {
+    
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0.0, WINDOW_WIDTH, WINDOW_HEIGHT, 0.0, -1.0, 10.0);
+        glMatrixMode(GL_MODELVIEW);
+        //glPushMatrix();        ----Not sure if I need this
+        glLoadIdentity();
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
+        glClear(GL_DEPTH_BUFFER_BIT);
+    
+        glPushMatrix();
+        glTranslatef(WINDOW_WIDTH/2-100, WINDOW_HEIGHT/4, 0);
+        glScalef(1, -1, 1);
+        glScalef(2, 2, 2);
+        glColor3f(1, 1, 0);
+        dtx_string(menuText[0].c_str());
+        cout<<cursorX<<" "<<cursorY<<endl;
+        glPopMatrix();
+        glPushMatrix();
+        glTranslatef(WINDOW_WIDTH/2-100, WINDOW_HEIGHT/4+80, 0);
+        glScalef(1, -1, 1);
+        glScalef(1.5, 1.5, 1.5);
+        dtx_string(menuText[1].c_str());
+        glPopMatrix();
+        glPushMatrix();
+        glTranslatef(WINDOW_WIDTH/2-100, WINDOW_HEIGHT/4+130, 0);
+        glScalef(1, -1, 1);
+        glScalef(1.5, 1.5, 1.5);
+        dtx_string(menuText[2].c_str());
+        glPopMatrix();
+        // Making sure we can render 3d again
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        //glPopMatrix();        ----and this?
+    }
     if (mode == SELECT)
 		stopPicking();
+
 	else
 		glutSwapBuffers();
 }
@@ -645,7 +707,7 @@ int main(int argc,char ** argv)
         "snow_negative_y.bmp",
     };
     skybox.loadSkyBox("/Users/robinmalhotra2/Downloads/skybox/", filenames);
-    if(!(font = dtx_open_font("/Users/robinmalhotra2/Developer/xcodeglut/XcodeGlut/Starjout.ttf", 24))) {
+    if(!(font = dtx_open_font("/Users/robinmalhotra2/Developer/xcodeglut/XcodeGlut/Starjout.ttf", 25))) {
         		fprintf(stderr, "failed to open font\n");
         	return 1;
     }
