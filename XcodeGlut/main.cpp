@@ -9,6 +9,7 @@
 #include <iostream>
 #include <OpenGL/OpenGL.h>
 #include <OpenAL/al.h>
+#include <algorithm>
 #include <OpenAL/alc.h>
 #include <GLUT/GLUT.h>
 #include <stdio.h>
@@ -23,10 +24,15 @@
 #include "Monopoly.h"
 #include "skyBoxTexture.h"
 #include "drawtext.h"
+
 skyBoxTexture skybox;
 dtx_font *font;
 
 Monopoly game;
+
+//single player stuff
+bool isServer;
+int homePlayerID,taxMode=0;
 
 //bools for display
 bool menu, globe=true, city;
@@ -48,6 +54,7 @@ GLuint selectBuf[BUFSIZE];
 GLint hits;
 int mode = RENDER;
 int cursorX,cursorY;
+void gameButtons();
 bool isWithinCoordinates(int upperLeftX,int upperLeftY,int lowerRightX, int lowerRightY)
 {
     if (menu && cursorX>upperLeftX && cursorY>upperLeftY && cursorX<lowerRightX &&cursorY<lowerRightY)
@@ -118,7 +125,40 @@ void locationsAtDistance(int location, int distance)
 
 void payRent()
 {
-    cout<<"paid rent";
+    if (game.locations.at(game.players.at(homePlayerID).currentPosition).owner!=homePlayerID)
+    {
+        int status=game.locations.at(game.players.at(homePlayerID).currentPosition).status;
+        float rent=game.locations.at(game.players.at(homePlayerID).currentPosition).rent[status];
+        game.payRent(homePlayerID, rent);
+    }
+}
+
+void payTax()
+{
+    if (game.locations.at(game.players.at(homePlayerID).currentPosition).owner==homePlayerID) {
+        if (taxMode==0)
+        {
+            game.payTaxes(homePlayerID, game.taxPercent*game.locations.at(game.players.at(homePlayerID).currentPosition).cost[game.locations.at(game.players.at(homePlayerID).currentPosition).status]);
+            
+        }
+        else
+        {
+            game.payTaxes(homePlayerID, game.taxAmount);
+        }
+    }
+}
+
+void mortgageCity()
+{
+    if (game.locations.at(game.players.at(homePlayerID).currentPosition).owner==homePlayerID)
+    {
+        game.mortgage(homePlayerID, game.players.at(homePlayerID).currentPosition);
+        cout<<game.players.at(homePlayerID).currentMoney;
+    }
+    else
+    {
+        cout<<"bank fraud:you tried to mortgage something you don't own";
+    }
 }
 
 int getDiceFace()
@@ -126,6 +166,18 @@ int getDiceFace()
     srand((int)time(NULL));
     int facevalue = (rand() % 6) + 1;
     return facevalue;
+}
+void buyOrUpgrade()
+{
+    if (game.locations.at(game.players.at(homePlayerID).currentPosition).owner==homePlayerID || game.locations.at(game.players.at(homePlayerID).currentPosition).owner==-1)
+    {
+        game.locations.at(game.players.at(homePlayerID).currentPosition).status++;
+        game.players.at(homePlayerID).currentMoney-=game.locations.at(game.players.at(homePlayerID).currentPosition).cost[game.locations.at(game.players.at(homePlayerID).currentPosition).status];
+    }
+    else
+    {
+        cout<<"you're trying to buy in someone else's territory";
+    }
 }
 
 void reportCheating(int id)
@@ -341,6 +393,17 @@ void processHits2 (GLint hits, GLuint buffer[], int sw)
     if (numberOfNames > 0) {
         printf ("You picked snowman  ");
         ptr = ptrNames;
+        
+        if (find(locationsFromTraversal.begin(), locationsFromTraversal.end(), *ptr)!=locationsFromTraversal.end())
+        {
+            game.movePiece(homePlayerID, *ptr);
+        }
+        else
+        {
+            cout<<"invalid location";
+        }
+        game.currentTurn=(game.currentTurn+1)%game.players.size();
+        
         for (j = 0; j < numberOfNames; j++,ptr++) {
             printf ("%d ", *ptr);
         }
@@ -365,6 +428,99 @@ void stopPicking() {
 	}
 	mode = RENDER;
 }
+
+
+
+//game buttons
+GLUI *glui_subwin2;
+GLUI_Panel *playerPanel,*controlsPanel, *taxPanel, *cardsPanel, *jailFinePanel, *mortgagePanel;
+GLUI_Listbox *moneyListBox,*currentLocationListBox,*playerIDListBox,*reportCheatingListBox,*taxAmountListBox;
+GLUI_Listbox *cardNumberListBox,*cardNameListBox,*cardOwnerListBox,*cardStatusListBox,*cardMortgageListBox,*cardTaxListBox;
+GLUI_RadioGroup *taxRadio;
+int liveCard=0,*liveCardPointer;
+
+
+void cardChanged()
+{
+    liveCard=cardNumberListBox->get_int_val();
+    cout<<liveCard;
+    glui_subwin2->close();
+    gameButtons();
+}
+
+
+void gameButtons()
+{
+    string currentLocation="Medittersoemthign";
+    
+    glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
+    
+    glui_subwin2->set_main_gfx_window( mainWindow );
+    playerPanel=glui_subwin2->add_panel("player data");
+    glui_subwin2->add_statictext_to_panel(playerPanel, "something");
+    
+    moneyListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "cash", NULL, 1, (GLUI_Update_CB)NULL);
+    moneyListBox->add_item(1,to_string(game.players.at(homePlayerID).currentMoney).c_str());
+    
+    currentLocationListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "currentLocation",NULL, 2, (GLUI_Update_CB)NULL);
+    currentLocationListBox->add_item(2, game.locations.at( game.players.at(homePlayerID).currentPosition).name.c_str());
+    
+    playerIDListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "player ID", NULL,3,(GLUI_Update_CB)NULL);
+    playerIDListBox->add_item(3,to_string(homePlayerID).c_str());
+    
+    controlsPanel=glui_subwin2->add_panel("controls");
+    glui_subwin2->add_button_to_panel(controlsPanel, "pay rent", 4,(GLUI_Update_CB)payRent);
+    reportCheatingListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "player who is Cheating",NULL,5,(GLUI_Update_CB)reportCheating);
+    reportCheatingListBox->add_item(1, "player1");
+    glui_subwin2->add_button_to_panel(controlsPanel,"report cheating");
+    glui_subwin2->add_button_to_panel(controlsPanel, "mortgage current location",15,(GLUI_Update_CB)mortgageCity);
+    glui_subwin2->add_button_to_panel(controlsPanel, "upgrade/buy",16,(GLUI_Update_CB)buyOrUpgrade);
+    
+    
+    taxPanel=glui_subwin2->add_panel("Tax");
+    taxRadio=glui_subwin2->add_radiogroup_to_panel(taxPanel,NULL,7,(GLUI_Update_CB)NULL);
+    glui_subwin2->add_radiobutton_to_group(taxRadio, "percent");
+    glui_subwin2->add_radiobutton_to_group(taxRadio, "amount");
+    taxAmountListBox= glui_subwin2->add_listbox_to_panel(taxPanel,"taxAmount",NULL,7,(GLUI_Update_CB)NULL);
+    glui_subwin2->add_button_to_panel(taxPanel, "pay taxes",8,(GLUI_Update_CB)payTax);
+    glui_subwin2->add_button_to_panel(playerPanel, "other thign",1,(GLUI_Update_CB)NULL);
+    
+    
+    cardsPanel=glui_subwin2->add_panel("cards data");
+    cardNumberListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "ID",liveCardPointer,14,(GLUI_Update_CB)cardChanged);
+    cardNameListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Name",NULL,8,(GLUI_Update_CB)NULL);
+    cardOwnerListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Owner",NULL,9,(GLUI_Update_CB)NULL);
+    cardStatusListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Status",NULL,10,(GLUI_Update_CB)NULL);
+    cardMortgageListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Mortgage", NULL,11, (GLUI_Update_CB)NULL);
+    cardTaxListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Tax",NULL,12,(GLUI_Update_CB)NULL);
+    
+    for (int i=0; i<game.locations.size(); i++)
+    {
+        cardNumberListBox->add_item(i, to_string(i).c_str());
+    }
+    cardNameListBox->add_item(0, game.locations.at(liveCard).name.c_str());
+    cardOwnerListBox->add_item(0, to_string(game.locations.at(liveCard).owner).c_str());
+    cardStatusListBox->add_item(0, to_string(game.locations.at(liveCard).status).c_str());
+    cardMortgageListBox->add_item(0,  to_string(game.locations.at(liveCard).cost[game.locations.at(liveCard).status]).c_str());
+    taxMode=taxRadio->get_int_val();
+    if (taxRadio->get_int_val()==0)
+    {
+        cardTaxListBox->add_item(0, to_string(game.locations.at(liveCard).rent[game.locations.at(liveCard).status]*game.taxPercent).c_str());
+    }
+    else
+    {
+        cardTaxListBox->add_item(0, to_string(game.taxAmount).c_str());
+    }
+    
+    
+    jailFinePanel=glui_subwin2->add_panel("jailFine");
+    glui_subwin2->add_button_to_panel(jailFinePanel, "pay JailFine",13,(GLUI_Update_CB)NULL);
+    
+    
+    
+}
+
+
 
 
 void display()
@@ -484,6 +640,7 @@ void display()
         glPushMatrix();
         object1.draw();
         glPopMatrix();
+        
     }
     
     if (globe==true||menu==true)
@@ -572,74 +729,66 @@ void display()
         glMatrixMode(GL_MODELVIEW);
         //glPopMatrix();        ----and this?
     }
+    
+    
+
     if (mode == SELECT)
 		stopPicking();
-
+    
 	else
 		glutSwapBuffers();
 }
 
-//game buttons
-GLUI *glui_subwin2;
-GLUI_Panel *playerPanel,*controlsPanel, *taxPanel, *cardsPanel, *jailFinePanel, *mortgagePanel;
-GLUI_Listbox *moneyListBox,*currentLocationListBox,*playerIDListBox,*reportCheatingListBox,*mortgageListBox,*taxAmountListBox;
-GLUI_Listbox *cardNameListBox,*cardOwnerListBox,*cardStatusListBox,*cardMortgageListBox,*cardTaxListBox;
-GLUI_RadioGroup *taxRadio;
-void gameButtons()
-{
-    int money=1299;
-    string currentLocation="Medittersoemthign";
-    int playerID=2;
-    
-    
-     glui_subwin2 = GLUI_Master.create_glui_subwindow(mainWindow, GLUI_SUBWINDOW_LEFT );
-    
-    glui_subwin2->set_main_gfx_window( mainWindow );
-    playerPanel=glui_subwin2->add_panel("player data");
-    glui_subwin2->add_statictext_to_panel(playerPanel, "something");
-
-    moneyListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "cash", NULL, 1, (GLUI_Update_CB)NULL);
-    moneyListBox->add_item(1,to_string(money).c_str());
-    
-    currentLocationListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "currentLocation",NULL, 2, (GLUI_Update_CB)NULL);
-    currentLocationListBox->add_item(2, currentLocation.c_str());
-    
-    playerIDListBox=glui_subwin2->add_listbox_to_panel(playerPanel, "player ID", NULL,3,(GLUI_Update_CB)NULL);
-    playerIDListBox->add_item(3,to_string(playerID).c_str());
-    
-    controlsPanel=glui_subwin2->add_panel("controls");
-    glui_subwin2->add_button_to_panel(controlsPanel, "pay rent", 4,(GLUI_Update_CB)payRent);
-    reportCheatingListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "player who is Cheating",NULL,5,(GLUI_Update_CB)reportCheating);
-    reportCheatingListBox->add_item(1, "player1");
-    glui_subwin2->add_button("report cheating");
-    mortgageListBox=glui_subwin2->add_listbox_to_panel(controlsPanel, "mortgage",NULL,6,(GLUI_Update_CB)payRent);
-    
-    taxPanel=glui_subwin2->add_panel("Tax");
-    taxRadio=glui_subwin2->add_radiogroup_to_panel(taxPanel,NULL,7,(GLUI_Update_CB)NULL);
-    glui_subwin2->add_radiobutton_to_group(taxRadio, "percent");
-    glui_subwin2->add_radiobutton_to_group(taxRadio, "amount");
-    taxAmountListBox= glui_subwin2->add_listbox_to_panel(taxPanel,"taxAmount",NULL,7,(GLUI_Update_CB)NULL);
-    glui_subwin2->add_button_to_panel(taxPanel, "pay taxes",8,(GLUI_Update_CB)NULL);
-    glui_subwin2->add_button_to_panel(playerPanel, "other thign",1,(GLUI_Update_CB)payRent);
-    
-    
-    cardsPanel=glui_subwin2->add_panel("cards data");
-    cardNameListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Name",NULL,8,(GLUI_Update_CB)NULL);
-    cardOwnerListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Owner",NULL,9,(GLUI_Update_CB)NULL);
-    cardStatusListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Status",NULL,10,(GLUI_Update_CB)NULL);
-    cardMortgageListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Mortgage", NULL,11, (GLUI_Update_CB)NULL);
-    cardTaxListBox=glui_subwin2->add_listbox_to_panel(cardsPanel, "Tax",NULL,12,(GLUI_Update_CB)NULL);
-    
-    jailFinePanel=glui_subwin2->add_panel("jailFine");
-    glui_subwin2->add_button_to_panel(jailFinePanel, "pay JailFine",13,(GLUI_Update_CB)NULL);
-    
-
-    
-}
 
 
 int main(int argc,char ** argv)
 {
+//    if (atoi(argv[1])==1)
+//    {
+//        isServer=true;
+//    }
+    
+    //static setup
+    isServer=1;
+    homePlayerID=0;
+    Location l1,l2;
+    Player p1;
+    l1.name="soemthig";l1.group=2;
+    l2.name="WTF";l2.group=3;
+    p1.currentMoney=300;
+    p1.currentPosition=0;
+    for (int i = 0; i < 7; ++i)
+    {
+        l1.cost[i]=i;
+        l2.cost[i]=2*i;
+        /* code */
+    }
+    for (int i = 0; i < 6; ++i)
+    {
+        l1.rent[i]=2*i;
+        l2.rent[i]=i;
+        /* code */
+    }
+    l1.locationOfObjectFile="ajhsdk/asdc.obj";
+    l1.locationNo=5;
+    l1.owner=0;
+    l2.locationOfObjectFile="sadkjc";
+    l2.locationNo=4;
+    l2.owner=1;
+    game.locations.push_back(l1);
+    game.locations.push_back(l2);
+    game.players.push_back(p1);
+    game.currency="dollar";
+    game.taxPercent=0.1;
+    game.taxAmount=100;
+    
+    
+    
+    
+    
+    
+    
+    
     glutInit(&argc, argv);
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -696,6 +845,8 @@ int main(int argc,char ** argv)
     }
     
     facevalue = getDiceFace();
+    locationsAtDistance(game.players.at(homePlayerID).currentPosition, facevalue);
+    
     gameButtons();
     string filenames[6]={
         "snow_positive_z.bmp",

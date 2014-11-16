@@ -14,6 +14,9 @@
 		7A09498919F460E80052E044 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498719F460E80052E044 /* OpenAL.framework */; };
 		7A09498A19F460E80052E044 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498819F460E80052E044 /* OpenGL.framework */; };
 		7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A09498B19F460EE0052E044 /* GLUT.framework */; };
+		7A1C297D1A18D26400B23123 /* libboost_serialization.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1C297A1A18D26400B23123 /* libboost_serialization.dylib */; };
+		7A1C297E1A18D26400B23123 /* libboost_system.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1C297B1A18D26400B23123 /* libboost_system.dylib */; };
+		7A1C297F1A18D26400B23123 /* libboost_thread.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1C297C1A18D26400B23123 /* libboost_thread.dylib */; };
 		7A574A111A13F7590024A9E9 /* libdrawtext.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A574A101A13F7590024A9E9 /* libdrawtext.dylib */; };
 		7A574A121A13F8C70024A9E9 /* libdrawtext.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7A574A101A13F7590024A9E9 /* libdrawtext.dylib */; };
 		7A7AD5E11A0BD82B0034D9BA /* Location.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7AD5DB1A0BD82B0034D9BA /* Location.cpp */; };
@@ -52,6 +55,9 @@
 		7A09498819F460E80052E044 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		7A09498B19F460EE0052E044 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		7A09DC141A0B884800153D52 /* GLUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUI.framework; path = ../../../../Library/Frameworks/GLUI.framework; sourceTree = "<group>"; };
+		7A1C297A1A18D26400B23123 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../usr/local/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
+		7A1C297B1A18D26400B23123 /* libboost_system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_system.dylib; path = ../../../../usr/local/lib/libboost_system.dylib; sourceTree = "<group>"; };
+		7A1C297C1A18D26400B23123 /* libboost_thread.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_thread.dylib; path = ../../../../usr/local/lib/libboost_thread.dylib; sourceTree = "<group>"; };
 		7A574A0A1A13E6880024A9E9 /* Starjout.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Starjout.ttf; path = ../../../Downloads/star_jedi/starjout/Starjout.ttf; sourceTree = "<group>"; };
 		7A574A101A13F7590024A9E9 /* libdrawtext.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdrawtext.dylib; path = ../../../../usr/local/Cellar/libdrawtext/0.1/lib/libdrawtext.dylib; sourceTree = "<group>"; };
 		7A574A141A13F9E70024A9E9 /* drawgl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = drawgl.c; sourceTree = "<group>"; };
@@ -87,6 +93,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A1C297D1A18D26400B23123 /* libboost_serialization.dylib in Frameworks */,
+				7A1C297E1A18D26400B23123 /* libboost_system.dylib in Frameworks */,
+				7A1C297F1A18D26400B23123 /* libboost_thread.dylib in Frameworks */,
 				7A574A111A13F7590024A9E9 /* libdrawtext.dylib in Frameworks */,
 				7A0875091A0BD91B00D07063 /* GLUI.framework in Frameworks */,
 				7A09498C19F460EE0052E044 /* GLUT.framework in Frameworks */,
@@ -101,6 +110,9 @@
 		7A09497219F460DC0052E044 = {
 			isa = PBXGroup;
 			children = (
+				7A1C297A1A18D26400B23123 /* libboost_serialization.dylib */,
+				7A1C297B1A18D26400B23123 /* libboost_system.dylib */,
+				7A1C297C1A18D26400B23123 /* libboost_thread.dylib */,
 				7A574A101A13F7590024A9E9 /* libdrawtext.dylib */,
 				7A09DC141A0B884800153D52 /* GLUI.framework */,
 				7A09498B19F460EE0052E044 /* GLUT.framework */,
@@ -325,10 +337,11 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Applications/Xcode\\ 3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
-					usr/local/include,
+					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					/usr/local/lib,
 					/usr/local/Cellar/libdrawtext/0.1/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
@@ -347,10 +360,11 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Applications/Xcode\\ 3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
-					usr/local/include,
+					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					/usr/local/lib,
 					/usr/local/Cellar/libdrawtext/0.1/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
