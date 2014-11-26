@@ -234,10 +234,30 @@ void drawRandomSpherePoints()
         glPushMatrix();
         
         vector3f point=cityVertices.at(i);
+        if (i==game.players.at(0).currentPosition)
+        {
+            glColor3f(1, 1, 0);
+        }
+        else if (i==game.players.at(1).currentPosition)
+        {
+            glColor3f(0, 0, 1);
+        }
+        else if (i==game.players.at(2).currentPosition)
+        {
+            glColor3f(0, 1, 0);
+        }
+        else if (i==game.players.at(3).currentPosition)
+        {
+            glColor3f(0, 1, 1);
+        }
+        
         glTranslatef(point.x, point.y, point.z);
         glPushName(i);
         glutSolidSphere(1.0, 10, 10);
+        
         glPopName();
+        glColor3f(1, 0, 0);
+
         glPopMatrix();
     }
     
@@ -478,9 +498,9 @@ void startPicking() {
 	glPushMatrix();
 	glLoadIdentity();
     
-	gluPickMatrix(cursorX,viewport[3]-cursorY,5,5,viewport);
+	gluPickMatrix(cursorX,viewport[3]-cursorY,50,50,viewport);
 	ratio = (viewport[2]+0.0) / viewport[3];
-	gluPerspective(45,ratio,0.1,1000);
+	gluPerspective(45,ratio,0.1,10000);
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -903,12 +923,17 @@ int main(int argc,char ** argv)
     p1.currentPosition=0;
     p2.currentMoney=game.startingMoney;
     p2.currentPosition=1;
-//    
-//    p3.currentMoney=game.startingMoney;
-//    p3.currentPosition=2;
-//    p3.isBot=true;
-//    p4.currentMoney=game.startingMoney;
-//    p4.isBot=true;
+    
+    p3.currentMoney=game.startingMoney;
+    p3.currentPosition=2;
+    p3.isBot=true;
+    p4.currentMoney=game.startingMoney;
+    p4.currentPosition=3;
+    p4.isBot=true;
+    game.players.push_back(p1);
+        game.players.push_back(p2);
+        game.players.push_back(p3);
+        game.players.push_back(p4);
 //    for (int i = 0; i < 7; ++i)
 //    {
 //        l1.cost[i]=i;
@@ -924,13 +949,8 @@ int main(int argc,char ** argv)
 //    l1.locationOfObjectFile="ajhsdk/asdc.obj";
 //    l1.locationNo=5;
 //    l1.owner=0;
-//    l2.locationOfObjectFile="sadkjc";
-//    l2.locationNo=4;
-//    l2.owner=1;
-//    game.locations.push_back(l1);
-//    game.locations.push_back(l2);
-    game.players.push_back(p1);
-//    game.currency="dollar";
+
+    //    game.currency="dollar";
 //    game.taxPercent=0.1;
 //    game.taxAmount=100;
     game.currentTurn=1;
