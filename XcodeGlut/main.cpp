@@ -220,6 +220,10 @@ vector3f randomSpherePoint()
     float v = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float theta = 2 * M_PI * u;
     float phi = acos(2*v-1);
+    if (phi>3*M_PI/8)
+    {
+        phi=4/3*phi;
+    }
     float x=(10*sin(phi)*cos(theta));
     float y=(10 * sin(phi) * sin(theta));
     float z=10*cos(phi);
@@ -399,75 +403,196 @@ void handler(
 void readData(int x)
 {
     
+//    boost::asio::io_service io_service;
+//    uint16_t port = x;
+//    boost::asio::ip::tcp::acceptor acceptor(
+//                                            io_service,
+//                                            boost::asio::ip::tcp::endpoint(
+//                                                                           boost::asio::ip::address::from_string( "10.0.0.4" ),
+//                                                                           port
+//                                                                           )
+//                                            );
+//    
+//    
+//    boost::asio::ip::tcp::socket socket( io_service );
+//    acceptor.accept( socket );
+//    std::cout << "connection from " << socket.remote_endpoint() << std::endl;
+//    
+//    size_t header;
+//    boost::asio::async_read(
+//                            socket,
+//                            boost::asio::buffer( &header, sizeof(header) ),handler
+//                            );
+//    std::cout << "body is " << header << " bytes" << std::endl;
+//    
+//    boost::asio::streambuf buf;
+//    boost::asio::async_read(
+//                            socket,
+//                            buf.prepare( header ),handler
+//                            );
+//    buf.commit( header );
+//    
+//    std::istream is( &buf );
+//    boost::archive::text_iarchive ar( is );
+//    ar & game;
+//    
+//    cout<<game.locations[0].rent[1]<<endl;
+//    cout<<game.players[0].currentPosition<<"how cool is this?";
+//    socket.close();
+
+    
     boost::asio::io_service io_service;
-    uint16_t port = x;
-    boost::asio::ip::tcp::acceptor acceptor(
-                                            io_service,
-                                            boost::asio::ip::tcp::endpoint(
-                                                                           boost::asio::ip::address::from_string( "10.0.0.4" ),
-                                                                           port
-                                                                           )
-                                            );
-    
-    
     boost::asio::ip::tcp::socket socket( io_service );
-    acceptor.accept( socket );
+    const short port = 1234;
+    
+    socket.connect(
+                   boost::asio::ip::tcp::endpoint(
+                                                  boost::asio::ip::address::from_string( "127.0.0.1" ),
+                                                  port
+                                                  )
+                   );
+    
     std::cout << "connection from " << socket.remote_endpoint() << std::endl;
     
-    size_t header;
-    boost::asio::async_read(
-                            socket,
-                            boost::asio::buffer( &header, sizeof(header) ),handler
-                            );
-    std::cout << "body is " << header << " bytes" << std::endl;
-    
     boost::asio::streambuf buf;
-    boost::asio::async_read(
-                            socket,
-                            buf.prepare( header ),handler
-                            );
-    buf.commit( header );
-    
-    std::istream is( &buf );
-    boost::archive::text_iarchive ar( is );
+    std::ostream os( &buf );
+    boost::archive::text_oarchive ar( os );
     ar & game;
     
-    cout<<game.locations[0].rent[1]<<endl;
-    cout<<game.players[0].currentPosition<<"how cool is this?";
-    socket.close();
+    const size_t header = buf.size();
+    std::cout << "buffer size " << header << " bytes" << std::endl;
     
+    // send header and buffer using scatter
+    std::vector<boost::asio::const_buffer> buffers;
+    
+    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+    buffers.push_back( buf.data() );
+    
+    const size_t rc = boost::asio::write(
+                                         socket,
+                                         buffers
+                                         );
+    std::cout << "wrote " << rc << " bytes" << std::endl;
+    
+    
+    // read header
+    size_t header1;
+    boost::asio::read(
+                      socket,
+                      boost::asio::buffer( &header1, sizeof(header1) )
+                      );
+    std::cout << "body is " << header1 << " bytes" << std::endl;
+    
+    // read body
+    boost::asio::streambuf buf1;
+    const size_t rc1 = boost::asio::read(
+                                         socket,
+                                         buf1.prepare( header1 )
+                                         );
+    
+    
+    buf1.commit( header1 );
+    
+    
+    std::cout << "read " << rc1 << " bytes" << std::endl;
+    std::istream is1( &buf1 );
+    boost::archive::text_iarchive ar1( is1 );
+    
+    
+    ar1 & game;
 }
 
 void sendData()
 {
-    for(int i=0 ;i<=1;i++)
-    {
-        boost::asio::streambuf buf;
-        std::ostream os( &buf );
-        boost::archive::text_oarchive ar( os );
-        ar & game;
-        
-        boost::asio::io_service io_service;
-        boost::asio::ip::tcp::socket socket( io_service );
-        short port = i+1234;
-        socket.connect(
-                       boost::asio::ip::tcp::endpoint(
-                                                      boost::asio::ip::address::from_string( "10.0.0.4" ),
-                                                      port
-                                                      )
-                       );
-        
-        const size_t header = buf.size();
-        std::cout << "buffer size " << header << " bytes" << std::endl;
-        
-        std::vector<boost::asio::const_buffer> buffers;
-        buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
-        buffers.push_back( buf.data() );
-        boost::asio::async_write(
-                                 socket,
-                                 buffers,handler);
-        socket.close();
-    }
+//  
+//        boost::asio::streambuf buf;
+//        std::ostream os( &buf );
+//        boost::archive::text_oarchive ar( os );
+//        ar & game;
+//        
+//        boost::asio::io_service io_service;
+//        boost::asio::ip::tcp::socket socket( io_service );
+//        short port = i+1234;
+//        socket.connect(
+//                       boost::asio::ip::tcp::endpoint(
+//                                                      boost::asio::ip::address::from_string( "10.0.0.4" ),
+//                                                      port
+//                                                      )
+//                       );
+//        
+//        const size_t header = buf.size();
+//        std::cout << "buffer size " << header << " bytes" << std::endl;
+//        
+//        std::vector<boost::asio::const_buffer> buffers;
+//        buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+//        buffers.push_back( buf.data() );
+//        boost::asio::async_write(
+//                                 socket,
+//                                 buffers,handler);
+//        socket.close();
+    
+    const uint16_t port = 1234;
+    boost::asio::io_service io_service;
+	boost::asio::ip::tcp::acceptor acceptor1(
+                                             io_service,
+                                             boost::asio::ip::tcp::endpoint(
+                                                                            boost::asio::ip::address::from_string("10.0.0.4" ),
+                                                                            port
+                                                                            )
+                                             );
+	boost::asio::ip::tcp::socket socket1( io_service );
+    
+    std::cout << "connection from " << socket1.remote_endpoint() << std::endl;
+    
+    boost::asio::streambuf buf;
+    std::ostream os( &buf );
+    boost::archive::text_oarchive ar( os );
+    ar & game;
+    
+    const size_t header = buf.size();
+    std::cout << "buffer size " << header << " bytes" << std::endl;
+    
+    // send header and buffer using scatter
+    std::vector<boost::asio::const_buffer> buffers;
+    
+    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+    buffers.push_back( buf.data() );
+    
+    const size_t rc = boost::asio::write(
+                                         socket1,
+                                         buffers
+                                         );
+    std::cout << "wrote " << rc << " bytes" << std::endl;
+    
+    
+    // read header
+    size_t header1;
+    boost::asio::read(
+                      socket1,
+                      boost::asio::buffer( &header1, sizeof(header1) )
+                      );
+    std::cout << "body is " << header1 << " bytes" << std::endl;
+    
+    // read body
+    boost::asio::streambuf buf1;
+    const size_t rc1 = boost::asio::read(
+                                         socket1,
+                                         buf1.prepare( header1 )
+                                         );
+    
+    
+    buf1.commit( header1 );
+    
+    
+    std::cout << "read " << rc1 << " bytes" << std::endl;
+    std::istream is1( &buf1 );
+    boost::archive::text_iarchive ar1( is1 );
+    
+    
+    ar1 & game;
+    
+    
+    
 }
 
 
@@ -1034,6 +1159,7 @@ int main(int argc,char ** argv)
         		fprintf(stderr, "failed to open font\n");
         	return 1;
     }
+    readData(1234);
     glutMainLoop();
     return 0;
 }
