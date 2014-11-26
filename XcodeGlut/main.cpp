@@ -130,6 +130,12 @@ void payRent()
         int status=game.locations.at(game.players.at(homePlayerID).currentPosition).status;
         float rent=game.locations.at(game.players.at(homePlayerID).currentPosition).rent[status];
         game.payRent(homePlayerID, rent);
+        cout<<"rent paid";
+    }
+    
+    else
+    {
+        cout<<"you don't have to pay rent in your own city";
     }
 }
 
@@ -139,11 +145,12 @@ void payTax()
         if (taxMode==0)
         {
             game.payTaxes(homePlayerID, game.taxPercent*game.locations.at(game.players.at(homePlayerID).currentPosition).cost[game.locations.at(game.players.at(homePlayerID).currentPosition).status]);
-            
+            cout<<"tax paid in mode 0";
         }
         else
         {
             game.payTaxes(homePlayerID, game.taxAmount);
+            cout<<"tax paid in mode 1";
         }
     }
 }
@@ -154,6 +161,7 @@ void mortgageCity()
     {
         game.mortgage(homePlayerID, game.players.at(homePlayerID).currentPosition);
         cout<<game.players.at(homePlayerID).currentMoney;
+        cout<<"mortgaged";
     }
     else
     {
@@ -173,6 +181,7 @@ void buyOrUpgrade()
     {
         game.locations.at(game.players.at(homePlayerID).currentPosition).status++;
         game.players.at(homePlayerID).currentMoney-=game.locations.at(game.players.at(homePlayerID).currentPosition).cost[game.locations.at(game.players.at(homePlayerID).currentPosition).status];
+        cout<<"territory upgraded";
     }
     else
     {
@@ -397,6 +406,7 @@ void processHits2 (GLint hits, GLuint buffer[], int sw)
         if (find(locationsFromTraversal.begin(), locationsFromTraversal.end(), *ptr)!=locationsFromTraversal.end())
         {
             game.movePiece(homePlayerID, *ptr);
+            game.currentTurn=(game.currentTurn+1)%4;
         }
         else
         {
@@ -483,7 +493,6 @@ void gameButtons()
     glui_subwin2->add_radiobutton_to_group(taxRadio, "amount");
     taxAmountListBox= glui_subwin2->add_listbox_to_panel(taxPanel,"taxAmount",NULL,7,(GLUI_Update_CB)NULL);
     glui_subwin2->add_button_to_panel(taxPanel, "pay taxes",8,(GLUI_Update_CB)payTax);
-    glui_subwin2->add_button_to_panel(playerPanel, "other thign",1,(GLUI_Update_CB)NULL);
     
     
     cardsPanel=glui_subwin2->add_panel("cards data");
@@ -521,6 +530,22 @@ void gameButtons()
 }
 
 
+
+
+
+void turnEnded()
+{
+    facevalue=getDiceFace();
+    if (game.currentTurn!=homePlayerID)
+    {
+        glui_subwin2->hide();
+        
+    }
+    else
+    {
+        
+    }
+}
 
 
 void display()
@@ -781,6 +806,7 @@ int main(int argc,char ** argv)
     game.currency="dollar";
     game.taxPercent=0.1;
     game.taxAmount=100;
+    game.currentTurn=1;
     
     
     
