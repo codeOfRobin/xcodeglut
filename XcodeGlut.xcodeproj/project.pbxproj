@@ -58,7 +58,6 @@
 		7A1C297A1A18D26400B23123 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../usr/local/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
 		7A1C297B1A18D26400B23123 /* libboost_system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_system.dylib; path = ../../../../usr/local/lib/libboost_system.dylib; sourceTree = "<group>"; };
 		7A1C297C1A18D26400B23123 /* libboost_thread.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_thread.dylib; path = ../../../../usr/local/lib/libboost_thread.dylib; sourceTree = "<group>"; };
-		7A574A0A1A13E6880024A9E9 /* Starjout.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Starjout.ttf; path = ../../../Downloads/star_jedi/starjout/Starjout.ttf; sourceTree = "<group>"; };
 		7A574A101A13F7590024A9E9 /* libdrawtext.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdrawtext.dylib; path = ../../../../usr/local/Cellar/libdrawtext/0.1/lib/libdrawtext.dylib; sourceTree = "<group>"; };
 		7A574A141A13F9E70024A9E9 /* drawgl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = drawgl.c; sourceTree = "<group>"; };
 		7A574A151A13F9E70024A9E9 /* drawtext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = drawtext.h; sourceTree = "<group>"; };
@@ -144,7 +143,6 @@
 				7A84E4AB19F6B3CB00E0EAA8 /* Vector3f.cpp */,
 				7A84E4AC19F6B3CB00E0EAA8 /* Vector3f.h */,
 				7A09497E19F460DC0052E044 /* main.cpp */,
-				7A574A0A1A13E6880024A9E9 /* Starjout.ttf */,
 				7A08750A1A0BE27C00D07063 /* skyBoxTexture.cpp */,
 				7A08750B1A0BE27C00D07063 /* skyBoxTexture.h */,
 				7AED624619F71236002E7440 /* Texture.cpp */,

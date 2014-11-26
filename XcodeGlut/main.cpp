@@ -896,11 +896,19 @@ int main(int argc,char ** argv)
     isServer=1;
     homePlayerID=0;
 //    Location l1,l2;
-    Player p1;
+    Player p1,p2,p3,p4;
 //    l1.name="soemthig";l1.group=2;
 //    l2.name="WTF";l2.group=3;
-    p1.currentMoney=300;
+    p1.currentMoney=game.startingMoney;
     p1.currentPosition=0;
+    p2.currentMoney=game.startingMoney;
+    p2.currentPosition=1;
+//    
+//    p3.currentMoney=game.startingMoney;
+//    p3.currentPosition=2;
+//    p3.isBot=true;
+//    p4.currentMoney=game.startingMoney;
+//    p4.isBot=true;
 //    for (int i = 0; i < 7; ++i)
 //    {
 //        l1.cost[i]=i;
