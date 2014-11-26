@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include <OpenGL/OpenGL.h>
 #include <OpenAL/al.h>
 #include <algorithm>
@@ -24,10 +25,18 @@
 #include "Monopoly.h"
 #include "skyBoxTexture.h"
 #include "drawtext.h"
+#include <boost/serialization/string.hpp>
+#include <boost/asio.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/thread.hpp>
+
 
 skyBoxTexture skybox;
 dtx_font *font;
 
+//extern int bisonParser();
+//extern Monopoly game;
 Monopoly game;
 
 //single player stuff
@@ -80,7 +89,7 @@ int MOUSE_DELTA_X, MOUSE_DELTA_Y;
 const float MOUSE_SENSITIVITY=0.1;
 
 
-
+void turnEnded();
 
 int w,h, border=6;
 loadObject object1,object2;
@@ -220,7 +229,7 @@ vector3f randomSpherePoint()
 
 void drawRandomSpherePoints()
 {
-    for (int i=0; i<40; i++)
+    for (int i=0; i<game.locations.size(); i++)
     {
         glPushMatrix();
         
@@ -351,6 +360,101 @@ void reshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
+//---------------------------//
+//server and multiplayer code
+//---------------------------//
+void handler(
+             const boost::system::error_code& error, // Result of operation.
+             
+             std::size_t bytes_transferred           // Number of bytes written from the
+                                                     // buffers. If an error occurred,
+                                                     // this will be less than the sum
+                                                     // of the buffer sizes.
+)
+{
+    cout<<"done";
+}
+
+
+void readData(int x)
+{
+    
+    boost::asio::io_service io_service;
+    uint16_t port = x;
+    boost::asio::ip::tcp::acceptor acceptor(
+                                            io_service,
+                                            boost::asio::ip::tcp::endpoint(
+                                                                           boost::asio::ip::address::from_string( "10.0.0.4" ),
+                                                                           port
+                                                                           )
+                                            );
+    
+    
+    boost::asio::ip::tcp::socket socket( io_service );
+    acceptor.accept( socket );
+    std::cout << "connection from " << socket.remote_endpoint() << std::endl;
+    
+    size_t header;
+    boost::asio::async_read(
+                            socket,
+                            boost::asio::buffer( &header, sizeof(header) ),handler
+                            );
+    std::cout << "body is " << header << " bytes" << std::endl;
+    
+    boost::asio::streambuf buf;
+    boost::asio::async_read(
+                            socket,
+                            buf.prepare( header ),handler
+                            );
+    buf.commit( header );
+    
+    std::istream is( &buf );
+    boost::archive::text_iarchive ar( is );
+    ar & game;
+    
+    cout<<game.locations[0].rent[1]<<endl;
+    cout<<game.players[0].currentPosition<<"how cool is this?";
+    socket.close();
+    
+}
+
+void sendData()
+{
+    for(int i=0 ;i<=1;i++)
+    {
+        boost::asio::streambuf buf;
+        std::ostream os( &buf );
+        boost::archive::text_oarchive ar( os );
+        ar & game;
+        
+        boost::asio::io_service io_service;
+        boost::asio::ip::tcp::socket socket( io_service );
+        short port = i+1234;
+        socket.connect(
+                       boost::asio::ip::tcp::endpoint(
+                                                      boost::asio::ip::address::from_string( "10.0.0.4" ),
+                                                      port
+                                                      )
+                       );
+        
+        const size_t header = buf.size();
+        std::cout << "buffer size " << header << " bytes" << std::endl;
+        
+        std::vector<boost::asio::const_buffer> buffers;
+        buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+        buffers.push_back( buf.data() );
+        boost::asio::async_write(
+                                 socket,
+                                 buffers,handler);
+        socket.close();
+    }
+}
+
+
+
+
+
+
 
 //---------------
 // Picking Stuff
@@ -406,7 +510,8 @@ void processHits2 (GLint hits, GLuint buffer[], int sw)
         if (find(locationsFromTraversal.begin(), locationsFromTraversal.end(), *ptr)!=locationsFromTraversal.end())
         {
             game.movePiece(homePlayerID, *ptr);
-            game.currentTurn=(game.currentTurn+1)%4;
+
+            turnEnded();
         }
         else
         {
@@ -530,23 +635,20 @@ void gameButtons()
 }
 
 
-
-
-
 void turnEnded()
 {
     facevalue=getDiceFace();
-    if (game.currentTurn!=homePlayerID)
+    game.currentTurn=(game.currentTurn+1)%4;
+    if (game.currentTurn-1!=homePlayerID)
     {
         glui_subwin2->hide();
-        
+        sendData();
     }
     else
     {
-        
+        readData(1234);
     }
 }
-
 
 void display()
 {
@@ -684,28 +786,36 @@ void display()
         glRotatef(venusRotate, 0.0, 0.0, 1.0);
         drawRandomSpherePoints();
         
-        for (int i=0; i<cityVertices.size()-1; i++)
+        for (int i=0; i<game.locations.size(); i++)
         {
-            vector3f start=cityVertices.at(i);
-            vector3f end=cityVertices.at(i+1);
-            vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
-            vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
-            
-            glColor3f(1.0, 0.0, 0.0);
-            glLineWidth(12.0);
-            glBegin(GL_LINE_STRIP);
+            for(int j=0;j<game.locations.size();j++)
+            {
+                if (game.graph[i][j]==true)
+                {
+                    vector3f start=cityVertices.at(i);
+                    vector3f end=cityVertices.at(j);
+                    vector3f perpBisectorDirection=vector3f((start.x+end.x),(start.y+end.y),(start.z+end.z));
+                    vector3f tan1(-(start.x-8*perpBisectorDirection.x+end.x)/6,-(start.y-8*perpBisectorDirection.y+end.y)/6, -(start.z-8*perpBisectorDirection.z+end.z)/6);
+                    
+                    glColor3f(1.0, 0.0, 0.0);
+                    glLineWidth(12.0);
+                    glBegin(GL_LINE_STRIP);
+                    
+                    int t = 30;
+                    for (int i = 0; i <= t; i++)
+                    {
+                        float pos = (float) i / (float) t;
+                        
+                        GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
+                        GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
+                        GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
+                        
+                        vector3f result(x, y, z);
+                        glVertex3f(x, y, z);
+                    }
+                }
 
-            int t = 30;
-            for (int i = 0; i <= t; i++) {
-                float pos = (float) i / (float) t;
-                
-                GLfloat x=bezierCurve(pos, start.x, tan1.x, tan1.x,end.x);
-                GLfloat y=bezierCurve(pos, start.y, tan1.y, tan1.y,end.y);
-                GLfloat z=bezierCurve(pos, start.z, tan1.z, tan1.z,end.z);
-                
-                vector3f result(x, y, z);
-                glVertex3f(x, y, z);
-            }
+        }
             glEnd();
 
         }
@@ -774,44 +884,53 @@ int main(int argc,char ** argv)
 //    }
     
     //static setup
+//    bisonParser();
+    
+    // create and open an archive for input
+    std::ifstream ifs("/Users/robinmalhotra2/Developer/xcodeglut/XcodeGlut/filename");
+    boost::archive::text_iarchive ia(ifs);
+    // read class state from archive
+    ia >> game;
+    // archive and stream closed when destructors are called
+    
     isServer=1;
     homePlayerID=0;
-    Location l1,l2;
+//    Location l1,l2;
     Player p1;
-    l1.name="soemthig";l1.group=2;
-    l2.name="WTF";l2.group=3;
+//    l1.name="soemthig";l1.group=2;
+//    l2.name="WTF";l2.group=3;
     p1.currentMoney=300;
     p1.currentPosition=0;
-    for (int i = 0; i < 7; ++i)
-    {
-        l1.cost[i]=i;
-        l2.cost[i]=2*i;
-        /* code */
-    }
-    for (int i = 0; i < 6; ++i)
-    {
-        l1.rent[i]=2*i;
-        l2.rent[i]=i;
-        /* code */
-    }
-    l1.locationOfObjectFile="ajhsdk/asdc.obj";
-    l1.locationNo=5;
-    l1.owner=0;
-    l2.locationOfObjectFile="sadkjc";
-    l2.locationNo=4;
-    l2.owner=1;
-    game.locations.push_back(l1);
-    game.locations.push_back(l2);
+//    for (int i = 0; i < 7; ++i)
+//    {
+//        l1.cost[i]=i;
+//        l2.cost[i]=2*i;
+//        /* code */
+//    }
+//    for (int i = 0; i < 6; ++i)
+//    {
+//        l1.rent[i]=2*i;
+//        l2.rent[i]=i;
+//        /* code */
+//    }
+//    l1.locationOfObjectFile="ajhsdk/asdc.obj";
+//    l1.locationNo=5;
+//    l1.owner=0;
+//    l2.locationOfObjectFile="sadkjc";
+//    l2.locationNo=4;
+//    l2.owner=1;
+//    game.locations.push_back(l1);
+//    game.locations.push_back(l2);
     game.players.push_back(p1);
-    game.currency="dollar";
-    game.taxPercent=0.1;
-    game.taxAmount=100;
+//    game.currency="dollar";
+//    game.taxPercent=0.1;
+//    game.taxAmount=100;
     game.currentTurn=1;
     
     
     
     
-    
+    cout<<game.locations.at(i).group;
     
     
     
@@ -863,7 +982,7 @@ int main(int argc,char ** argv)
     
     object1.load("/Users/robinmalhotra2/Downloads/Cities/tzfhx79fnc-castle/castle/castle.obj");
     object2.load("/Users/robinmalhotra2/Downloads/dice-2.obj");
-    for (int i=0; i<40; i++)
+    for (int i=0; i<game.locations.size(); i++)
     {
         
         vector3f point=randomSpherePoint();
