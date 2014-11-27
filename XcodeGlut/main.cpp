@@ -51,7 +51,7 @@ struct dtx_font *font2;
 string menuText[3]={"      Welcome to \nStar Wars Monopoly\n","\n             New Game\n","\n                 Exit\n"};
 
 //multiplayer
-bool receiving=false,sending=false;
+bool receiving=false,sending=false,waiting=false;
 //dice stuff
 int facevalue;
 GLfloat diceRotate=0;
@@ -234,12 +234,10 @@ void botComputes()
         if (game.locations.at(locationsFromTraversal[i]).owner==game.currentTurn)
         {
             game.movePiece(game.currentTurn, i);
-            turnEnded();
             return;
         }
     }
     game.movePiece(game.currentTurn, min);
-    turnEnded();
     
 }
 //bezier curve
@@ -411,6 +409,7 @@ void preProcessEvents()
         if (receiving==false)
         {
             receiving=true;
+        
             boost::thread t(&readData,1234);
 
         }
@@ -447,7 +446,7 @@ void reshape(int w, int h)
 
 void readData(int x)
 {
-    
+    cout<<"receiving";
     boost::asio::io_service io_service;
     uint16_t port = x;
     boost::asio::ip::tcp::acceptor acceptor(
@@ -493,8 +492,8 @@ void readData(int x)
 }
 void sendData()
 {
-    for(int i=0 ;i<=1;i++)
-    {
+    cout<<"Sending Data";
+
         boost::asio::streambuf buf;
         std::ostream os( &buf );
         boost::archive::text_oarchive ar( os );
@@ -523,7 +522,7 @@ void sendData()
                                              );
         std::cout << "wrote " << rc << " bytes" << std::endl;;
         sending=false;
-    }
+    
 }
 
 
@@ -712,31 +711,48 @@ void gameButtons()
 
 void turnEnded()
 {
-    facevalue=getDiceFace();
-    int prev=game.currentTurn;
-    game.currentTurn=(game.currentTurn+1)%4;
+    if(!sending && !receiving)
+    {
+        if (game.currentTurn==homePlayerID)
+        {
+            cout<<"This is your turn";
+        }
+        facevalue=getDiceFace();
+        int prev=game.currentTurn;
+        game.currentTurn=(game.currentTurn+1)%4;
 
-    cout<<"Turn Ended";
-    cout<<"Current Turn:"<<game.currentTurn;
-    if (game.players.at(game.currentTurn).isBot && isServer)
-    {
-        botComputes();
-    }
-    else if (game.currentTurn!=homePlayerID)
-    {
-        glui_subwin2->hide();
-        readData(1234);
-    }
-    else if (prev==homePlayerID)
-    {
-        sendData();
-    }
-    else if(game.currentTurn==homePlayerID)
-    {
-        return;
-    }
-    
+        cout<<"Turn Ended";
+        cout<<"Current Turn:"<<game.currentTurn;
+        if (game.players.at(game.currentTurn).isBot && isServer)
+        {
+            botComputes();
+            sendData();
+        }
 
+        else if (prev==homePlayerID)
+        {
+            sendData();
+        }
+        if (game.currentTurn!=homePlayerID)
+        {
+            readData(1234);
+        }
+
+        else if(game.currentTurn==homePlayerID)
+        {
+            return;
+        }
+
+        if (game.players.at(game.currentTurn).isBot && isServer && (game.currentTurn==2 || game.currentTurn==3))
+        {
+            botComputes();
+            game.currentTurn=(game.currentTurn+1)%4;
+            botComputes();
+            sendData();
+            
+        }
+
+    }
     
 }
 
@@ -968,7 +984,6 @@ void display()
 
 int main(int argc,char ** argv)
 {
-    game.currentTurn=0;
 //    if (atoi(argv[1])==1)
 //    {
 //        isServer=true;
@@ -1024,7 +1039,7 @@ int main(int argc,char ** argv)
     //    game.currency="dollar";
 //    game.taxPercent=0.1;
 //    game.taxAmount=100;
-    game.currentTurn=1;
+    game.currentTurn=0;
     
     
     
