@@ -50,6 +50,8 @@ bool menu, globe=true, city;
 struct dtx_font *font2;
 string menuText[3]={"      Welcome to \nStar Wars Monopoly\n","\n             New Game\n","\n                 Exit\n"};
 
+//multiplayer
+bool receiving=false,sending=false;
 //dice stuff
 int facevalue;
 GLfloat diceRotate=0;
@@ -73,6 +75,7 @@ bool isWithinCoordinates(int upperLeftX,int upperLeftY,int lowerRightX, int lowe
     return false;
 }
 
+
 using namespace std;
 const int WINDOW_HEIGHT=720;
 const int WINDOW_WIDTH=1200;
@@ -90,6 +93,8 @@ const float MOUSE_SENSITIVITY=0.1;
 
 
 void turnEnded();
+void readData(int x);
+void sendData();
 
 int w,h, border=6;
 loadObject object1,object2;
@@ -178,6 +183,7 @@ void mortgageCity()
     }
 }
 
+
 int getDiceFace()
 {
     srand((int)time(NULL));
@@ -203,6 +209,39 @@ void reportCheating(int id)
     cout<<"repos";
 }
 
+
+void botComputes()
+{
+    if (game.locations.at(game.players.at(game.currentTurn).currentPosition).owner!=game.currentTurn)
+    {
+        int status=game.locations.at(game.players.at(homePlayerID).currentPosition).status;
+        float rent=game.locations.at(game.players.at(homePlayerID).currentPosition).rent[status];
+        game.payRent(game.currentTurn, rent);
+        cout<<"rent paid";
+    }
+    else
+    {
+        cout<<"I own this place. Rent Denied.";
+    }
+    
+    int min=locationsFromTraversal.at(i);
+    for (int i=0; i<locationsFromTraversal.size(); i++)
+    {
+        if (game.locations.at(locationsFromTraversal[i]).cost[game.locations.at(locationsFromTraversal.at(i)).status]<game.locations.at(min).cost[game.locations.at(min).status])
+        {
+            min=locationsFromTraversal.at(i);
+        }
+        if (game.locations.at(locationsFromTraversal[i]).owner==game.currentTurn)
+        {
+            game.movePiece(game.currentTurn, i);
+            turnEnded();
+            return;
+        }
+    }
+    game.movePiece(game.currentTurn, min);
+    turnEnded();
+    
+}
 //bezier curve
 
 GLfloat bezierCurve(float t, GLfloat P0,
@@ -367,6 +406,23 @@ void preProcessEvents()
         city=true;
         globe=true;
     }
+    else if(keyBoard::key['t'])
+    {
+        if (receiving==false)
+        {
+            receiving=true;
+            boost::thread t(&readData,1234);
+
+        }
+    }
+    else if (keyBoard::key['u'])
+    {
+        if (sending==false)
+        {
+            sending=true;
+            boost::thread t(&sendData);
+        }
+    }
 
 }
 void reshape(int w, int h)
@@ -387,212 +443,87 @@ void reshape(int w, int h)
 //---------------------------//
 //server and multiplayer code
 //---------------------------//
-void handler(
-             const boost::system::error_code& error, // Result of operation.
-             
-             std::size_t bytes_transferred           // Number of bytes written from the
-                                                     // buffers. If an error occurred,
-                                                     // this will be less than the sum
-                                                     // of the buffer sizes.
-)
-{
-    cout<<"done";
-}
 
 
 void readData(int x)
 {
     
-//    boost::asio::io_service io_service;
-//    uint16_t port = x;
-//    boost::asio::ip::tcp::acceptor acceptor(
-//                                            io_service,
-//                                            boost::asio::ip::tcp::endpoint(
-//                                                                           boost::asio::ip::address::from_string( "10.0.0.4" ),
-//                                                                           port
-//                                                                           )
-//                                            );
-//    
-//    
-//    boost::asio::ip::tcp::socket socket( io_service );
-//    acceptor.accept( socket );
-//    std::cout << "connection from " << socket.remote_endpoint() << std::endl;
-//    
-//    size_t header;
-//    boost::asio::async_read(
-//                            socket,
-//                            boost::asio::buffer( &header, sizeof(header) ),handler
-//                            );
-//    std::cout << "body is " << header << " bytes" << std::endl;
-//    
-//    boost::asio::streambuf buf;
-//    boost::asio::async_read(
-//                            socket,
-//                            buf.prepare( header ),handler
-//                            );
-//    buf.commit( header );
-//    
-//    std::istream is( &buf );
-//    boost::archive::text_iarchive ar( is );
-//    ar & game;
-//    
-//    cout<<game.locations[0].rent[1]<<endl;
-//    cout<<game.players[0].currentPosition<<"how cool is this?";
-//    socket.close();
-
-    
     boost::asio::io_service io_service;
+    uint16_t port = x;
+    boost::asio::ip::tcp::acceptor acceptor(
+                                            io_service,
+                                            boost::asio::ip::tcp::endpoint(
+                                                                           boost::asio::ip::address::from_string( "10.0.0.7" ),
+                                                                           port
+                                                                           )
+                                            );
+    
+    /* code */
+    
     boost::asio::ip::tcp::socket socket( io_service );
-    const short port = 1234;
-    
-    socket.connect(
-                   boost::asio::ip::tcp::endpoint(
-                                                  boost::asio::ip::address::from_string( "127.0.0.1" ),
-                                                  port
-                                                  )
-                   );
-    
+    acceptor.accept( socket );
     std::cout << "connection from " << socket.remote_endpoint() << std::endl;
     
-    boost::asio::streambuf buf;
-    std::ostream os( &buf );
-    boost::archive::text_oarchive ar( os );
-    ar & game;
-    
-    const size_t header = buf.size();
-    std::cout << "buffer size " << header << " bytes" << std::endl;
-    
-    // send header and buffer using scatter
-    std::vector<boost::asio::const_buffer> buffers;
-    
-    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
-    buffers.push_back( buf.data() );
-    
-    const size_t rc = boost::asio::write(
-                                         socket,
-                                         buffers
-                                         );
-    std::cout << "wrote " << rc << " bytes" << std::endl;
-    
-    
     // read header
-    size_t header1;
+    size_t header;
     boost::asio::read(
                       socket,
-                      boost::asio::buffer( &header1, sizeof(header1) )
+                      boost::asio::buffer( &header, sizeof(header) )
                       );
-    std::cout << "body is " << header1 << " bytes" << std::endl;
+    std::cout << "body is " << header << " bytes" << std::endl;
     
     // read body
-    boost::asio::streambuf buf1;
-    const size_t rc1 = boost::asio::read(
-                                         socket,
-                                         buf1.prepare( header1 )
-                                         );
-    
-    
-    buf1.commit( header1 );
-    
-    
-    std::cout << "read " << rc1 << " bytes" << std::endl;
-    std::istream is1( &buf1 );
-    boost::archive::text_iarchive ar1( is1 );
-    
-    
-    ar1 & game;
-}
-
-void sendData()
-{
-//  
-//        boost::asio::streambuf buf;
-//        std::ostream os( &buf );
-//        boost::archive::text_oarchive ar( os );
-//        ar & game;
-//        
-//        boost::asio::io_service io_service;
-//        boost::asio::ip::tcp::socket socket( io_service );
-//        short port = i+1234;
-//        socket.connect(
-//                       boost::asio::ip::tcp::endpoint(
-//                                                      boost::asio::ip::address::from_string( "10.0.0.4" ),
-//                                                      port
-//                                                      )
-//                       );
-//        
-//        const size_t header = buf.size();
-//        std::cout << "buffer size " << header << " bytes" << std::endl;
-//        
-//        std::vector<boost::asio::const_buffer> buffers;
-//        buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
-//        buffers.push_back( buf.data() );
-//        boost::asio::async_write(
-//                                 socket,
-//                                 buffers,handler);
-//        socket.close();
-    
-    const uint16_t port = 1234;
-    boost::asio::io_service io_service;
-	boost::asio::ip::tcp::acceptor acceptor1(
-                                             io_service,
-                                             boost::asio::ip::tcp::endpoint(
-                                                                            boost::asio::ip::address::from_string("10.0.0.4" ),
-                                                                            port
-                                                                            )
-                                             );
-	boost::asio::ip::tcp::socket socket1( io_service );
-    
-    std::cout << "connection from " << socket1.remote_endpoint() << std::endl;
-    
     boost::asio::streambuf buf;
-    std::ostream os( &buf );
-    boost::archive::text_oarchive ar( os );
+    const size_t rc = boost::asio::read(
+                                        socket,
+                                        buf.prepare( header )
+                                        );
+    buf.commit( header );
+    std::cout << "read " << rc << " bytes" << std::endl;
+    
+    // deserialize
+    std::istream is( &buf );
+    boost::archive::text_iarchive ar( is );
     ar & game;
     
-    const size_t header = buf.size();
-    std::cout << "buffer size " << header << " bytes" << std::endl;
+    cout<<game.locations[0].rent[1]<<endl;
+    cout<<game.players[0].currentPosition<<"how cool is this?";
+    receiving=false;
     
-    // send header and buffer using scatter
-    std::vector<boost::asio::const_buffer> buffers;
-    
-    buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
-    buffers.push_back( buf.data() );
-    
-    const size_t rc = boost::asio::write(
-                                         socket1,
-                                         buffers
-                                         );
-    std::cout << "wrote " << rc << " bytes" << std::endl;
-    
-    
-    // read header
-    size_t header1;
-    boost::asio::read(
-                      socket1,
-                      boost::asio::buffer( &header1, sizeof(header1) )
-                      );
-    std::cout << "body is " << header1 << " bytes" << std::endl;
-    
-    // read body
-    boost::asio::streambuf buf1;
-    const size_t rc1 = boost::asio::read(
-                                         socket1,
-                                         buf1.prepare( header1 )
-                                         );
-    
-    
-    buf1.commit( header1 );
-    
-    
-    std::cout << "read " << rc1 << " bytes" << std::endl;
-    std::istream is1( &buf1 );
-    boost::archive::text_iarchive ar1( is1 );
-    
-    
-    ar1 & game;
-    
-    
-    
+}
+void sendData()
+{
+    for(int i=0 ;i<=1;i++)
+    {
+        boost::asio::streambuf buf;
+        std::ostream os( &buf );
+        boost::archive::text_oarchive ar( os );
+        ar & game;
+        
+        boost::asio::io_service io_service;
+        boost::asio::ip::tcp::socket socket( io_service );
+        short port = 1234;
+        socket.connect(
+                       boost::asio::ip::tcp::endpoint(
+                                                      boost::asio::ip::address::from_string( "10.0.0.4" ),
+                                                      port
+                                                      )
+                       );
+        
+        const size_t header = buf.size();
+        std::cout << "buffer size " << header << " bytes" << std::endl;
+        
+        // send header and buffer using scatter
+        std::vector<boost::asio::const_buffer> buffers;
+        buffers.push_back( boost::asio::buffer(&header, sizeof(header)) );
+        buffers.push_back( buf.data() );
+        const size_t rc = boost::asio::write(
+                                             socket,
+                                             buffers
+                                             );
+        std::cout << "wrote " << rc << " bytes" << std::endl;;
+        sending=false;
+    }
 }
 
 
@@ -662,7 +593,6 @@ void processHits2 (GLint hits, GLuint buffer[], int sw)
         {
             cout<<"invalid location";
         }
-        game.currentTurn=(game.currentTurn+1)%game.players.size();
         
         for (j = 0; j < numberOfNames; j++,ptr++) {
             printf ("%d ", *ptr);
@@ -783,16 +713,31 @@ void gameButtons()
 void turnEnded()
 {
     facevalue=getDiceFace();
+    int prev=game.currentTurn;
     game.currentTurn=(game.currentTurn+1)%4;
-    if (game.currentTurn-1!=homePlayerID)
+
+    cout<<"Turn Ended";
+    cout<<"Current Turn:"<<game.currentTurn;
+    if (game.players.at(game.currentTurn).isBot && isServer)
+    {
+        botComputes();
+    }
+    else if (game.currentTurn!=homePlayerID)
     {
         glui_subwin2->hide();
-        sendData();
-    }
-    else
-    {
         readData(1234);
     }
+    else if (prev==homePlayerID)
+    {
+        sendData();
+    }
+    else if(game.currentTurn==homePlayerID)
+    {
+        return;
+    }
+    
+
+    
 }
 
 void display()
@@ -1023,6 +968,7 @@ void display()
 
 int main(int argc,char ** argv)
 {
+    game.currentTurn=0;
 //    if (atoi(argv[1])==1)
 //    {
 //        isServer=true;
@@ -1083,7 +1029,6 @@ int main(int argc,char ** argv)
     
     
     
-    cout<<game.locations.at(i).group;
     
     
     
@@ -1158,9 +1103,7 @@ int main(int argc,char ** argv)
     if(!(font = dtx_open_font("/Users/robinmalhotra2/Developer/xcodeglut/XcodeGlut/Starjout.ttf", 25))) {
         		fprintf(stderr, "failed to open font\n");
         	return 1;
-    }
-    readData(1234);
-    glutMainLoop();
+    }    glutMainLoop();
     return 0;
 }
 
