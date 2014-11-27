@@ -402,8 +402,15 @@ void preProcessEvents()
     {
         menu=false;
         city=true;
-        globe=true;
+        globe=false;
     }
+    else if (keyBoard::key['g'])
+    {
+        menu=false;
+        globe=true;
+        city=false;
+    }
+    
     else if(keyBoard::key['t'])
     {
         if (receiving==false)
